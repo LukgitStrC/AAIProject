@@ -2,6 +2,7 @@ import math
 import requests
 from PIL import Image
 from io import BytesIO
+from datetime import datetime
 
 def deg2num(lat, lon, zoom):
     """
@@ -44,17 +45,24 @@ def build_map(lat, lon, zoom, tiles_radius, api_key, map_id="satellite"):
     return canvas
 
 if __name__ == "__main__":
+    start_time = datetime.now()
+
     # Beispiel: Paris
     # lat, lon = 48.867606, 2.325756
+    # lat, lon = 48.868157, 2.327764
     # lat, lon = 48.865904, 2.332157
-    lat, lon = 48.837053, 2.415571
+    # lat, lon = 48.837053, 2.415571
+    lat, lon = 48.861511, 2.299869
     zoom = 21
     api_key = "qR5z0FXl7vgm9kk146HC"        # HIER DEINEN APIKEY AUS DEM FREE PLAN
+    img_name = "hehe"
 
     # Anzahl Tiles um Zentrum (z.B. 1 = 3×3, 2 = 5×5)
     tiles_radius = 2
 
     map_img = build_map(lat, lon, zoom, tiles_radius, api_key)
-    map_img.show()
-    map_img.save("maptiler_paris_test_3.png")
+    map_img.save(f"{img_name}.png")
     print("Karte gespeichert!")
+
+    end_time = datetime.now()
+    print("time:",end_time-start_time)
