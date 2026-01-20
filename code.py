@@ -48,14 +48,15 @@ if __name__ == "__main__":
     start_time = datetime.now()
 
     # Beispiel: Paris
-    # lat, lon = 48.867606, 2.325756
+    lat, lon = 48.867606, 2.325756
     # lat, lon = 48.868157, 2.327764
     # lat, lon = 48.865904, 2.332157
     # lat, lon = 48.837053, 2.415571
-    lat, lon = 48.861511, 2.299869
-    zoom = 18
+    # lat, lon = 48.861511, 2.299869
+    lat, lon = 49.1825214, -0.3625232
+    zoom = 21       # Std = 21
     api_key = "qR5z0FXl7vgm9kk146HC"        # HIER DEINEN APIKEY AUS DEM FREE PLAN
-    img_name = "hehe"
+    img_name = "shit_crossing_caen"
 
     # Anzahl Tiles um Zentrum (z.B. 1 = 3×3, 2 = 5×5)
     tiles_radius = 2
