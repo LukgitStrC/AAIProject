@@ -53,7 +53,7 @@ if __name__ == "__main__":
     # lat, lon = 48.865904, 2.332157
     # lat, lon = 48.837053, 2.415571
     lat, lon = 48.861511, 2.299869
-    zoom = 21
+    zoom = 18
     api_key = "qR5z0FXl7vgm9kk146HC"        # HIER DEINEN APIKEY AUS DEM FREE PLAN
     img_name = "hehe"
 
