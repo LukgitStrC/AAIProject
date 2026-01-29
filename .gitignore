@@ -207,4 +207,10 @@ marimo/_lsp/
 __marimo__/
 
 # custom
-streetview_images
+streetview_images/imagesFCAS
+streetview_images/synthetic_generator
+!streetview_images/synthetic_generator/synthetic_generator.py
+!streetview_images/synthetic_generator/split_train_test_data.py
+streetview_images/dataset_french_signs
+
+Part1_satelliteImages/dataset_caen
