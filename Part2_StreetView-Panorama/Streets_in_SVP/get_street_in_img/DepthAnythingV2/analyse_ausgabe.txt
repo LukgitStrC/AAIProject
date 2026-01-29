@@ -1,0 +1,454 @@
+from transformers import pipeline
+from PIL import Image
+import numpy as np
+import time
+import os
+import shutil
+
+
+import warnings
+warnings.filterwarnings("ignore")
+
+
+def get_depth_map(image_path):
+    # ----- Create Depth-Map -----
+    image = Image.open(image_path)
+    pipe = pipeline(task="depth-estimation", model="depth-anything/Depth-Anything-V2-Small-hf")
+
+    # Depth berechnen
+    output = pipe(image)
+    depth_map = output["depth"]
+
+    # Depth-Map & Originalbild als NumPy
+    depth_map_np = np.array(depth_map)
+    orig_img_np = np.array(image.convert("RGB"))
+
+    return orig_img_np, depth_map_np
+
+
+
+print("\n----- Analysis: Distance to center point -----\n")
+mean_dist = np.mean(dist_list)
+topMax = np.argsort(dist_list)[:5]
+topMin = np.argsort(-dist_list)[:5]
+print(f"Top 5 greatest depth: {dist_list[topMax[0]]}, {dist_list[topMax[1]]}, {dist_list[topMax[2]]}, {dist_list[topMax[3]]}, {dist_list[topMax[4]]}")
+print(f"Top 5 minimal Distances: {dist_list[topMin[0]]}, {dist_list[topMin[1]]}, {dist_list[topMin[2]]}, {dist_list[topMin[3]]}, {dist_list[topMin[4]]}")
+print(f"Mean Distance: {mean_dist} px")
+# 🔹 Über / unter Mittelwert
+above_mean = np.where(dist_list > mean_dist)[0]
+below_mean = np.where(dist_list <= mean_dist)[0]
+
+print("\nImages ABOVE mean distance:")
+for i in above_mean:
+    print(f"{files[i]} → {dist_list[i]:.2f} px")
+
+print("\nImages BELOW or EQUAL mean distance:")
+for i in below_mean:
+    print(f"{files[i]} → {dist_list[i]:.2f} px")
+
+
+print("\n----- Analysis: relative depths -----\n")
+top_deep = np.argsort(depth_raw_list)[:5]      # tiefste Punkte
+top_shallow = np.argsort(depth_raw_list)[-5:]  # flachste Punkte
+
+print("Top 5 tiefste Punkte (roh):")
+for i in top_deep:
+    print(f"{files[i]} → depth_raw={depth_raw_list[i]:.5f}, depth_norm={depth_norm_list[i]:.3f}, dist={dist_list[i]:.1f}px")
+
+print("\nTop 5 flachste Punkte (roh):")
+for i in top_shallow:
+    print(f"{files[i]} → depth_raw={depth_raw_list[i]:.5f}, depth_norm={depth_norm_list[i]:.3f}, dist={dist_list[i]:.1f}px")
+
+
+
+print("\n----- Center Region Depth Analysis -----\n")
+
+# Tiefste zentrale Bereiche (kleinster Rohwert)
+top_center_deep = np.argsort(center_region_raw_list)[:5]
+top_center_shallow = np.argsort(center_region_raw_list)[-5:]
+
+print("Top 5 Bilder mit tiefstem zentralem Bereich:")
+for i in top_center_deep:
+    print(f"{files[i]} → mean_raw={center_region_raw_list[i]:.5f}, mean_norm={center_region_norm_list[i]:.3f}")
+
+print("\nTop 5 Bilder mit flachstem zentralem Bereich:")
+for i in top_center_shallow:
+    print(f"{files[i]} → mean_raw={center_region_raw_list[i]:.5f}, mean_norm={center_region_norm_list[i]:.3f}")
+
+print("\n alle Center_cepths und deren Mittel:\n")
+print(center_region_raw_list)
+print(np.mean(center_region_raw_list))
+
+mean_center_depth = np.mean(center_region_raw_list)
+
+print("All ABOVE Center Depth Mean:")
+for i in np.where(center_region_raw_list > mean_center_depth)[0]:
+    print(f"{files[i]} → mean_center_depth={center_region_raw_list[i]:.5f}, mean_center_norm={center_region_norm_list[i]:.3f}")
+
+print("\nAll BELOW or EQUAL Center Depth Mean:")
+for i in np.where(center_region_raw_list <= mean_center_depth)[0]:
+    print(f"{files[i]} → mean_center_depth={center_region_raw_list[i]:.5f}, mean_center_norm={center_region_norm_list[i]:.3f}")
+
+
+
+
+
+
+
+
+
+
+
+----- Analysis: Distance to center point -----
+
+Top 5 greatest depth: 58.215118311311535, 81.25269226308751, 92.9623579735368, 97.8008179924892, 103.58571330062848
+Top 5 minimal Distances: 304.1710045352778, 297.1077245714086, 286.5030540849434, 284.98596456667826, 282.93108701590216
+Mean Distance: 182.6702109242064 px
+
+Images ABOVE mean distance:
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_140.png → 304.17 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_220.png → 282.93 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_240.png → 228.08 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_300.png → 220.34 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_320.png → 297.11 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_340.png → 224.85 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_40.png → 284.99 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_60.png → 286.50 px
+
+Images BELOW or EQUAL mean distance:
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_0.png → 107.49 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_100.png → 81.25 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_120.png → 174.64 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_160.png → 168.24 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_180.png → 58.22 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_20.png → 92.96 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_200.png → 135.28 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_260.png → 103.59 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_280.png → 97.80 px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_80.png → 139.63 px
+
+----- Analysis: relative depths -----
+
+Top 5 tiefste Punkte (roh):
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_40.png → depth_raw=3.00000, depth_norm=0.012, dist=285.0px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_200.png → depth_raw=3.00000, depth_norm=0.012, dist=135.3px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_60.png → depth_raw=3.00000, depth_norm=0.012, dist=286.5px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_0.png → depth_raw=4.00000, depth_norm=0.016, dist=107.5px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_100.png → depth_raw=4.00000, depth_norm=0.016, dist=81.3px
+
+Top 5 flachste Punkte (roh):
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_80.png → depth_raw=5.00000, depth_norm=0.020, dist=139.6px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_280.png → depth_raw=6.00000, depth_norm=0.024, dist=97.8px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_140.png → depth_raw=6.00000, depth_norm=0.024, dist=304.2px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_160.png → depth_raw=7.00000, depth_norm=0.027, dist=168.2px
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_320.png → depth_raw=19.00000, depth_norm=0.075, dist=297.1px
+
+----- Center Region Depth Analysis -----
+
+Top 5 Bilder mit tiefstem zentralem Bereich:
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_0.png → mean_raw=41.20070, mean_norm=0.162
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_80.png → mean_raw=46.65441, mean_norm=0.183
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_180.png → mean_raw=48.88879, mean_norm=0.192
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_100.png → mean_raw=50.71031, mean_norm=0.199
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_20.png → mean_raw=51.78467, mean_norm=0.203
+
+Top 5 Bilder mit flachstem zentralem Bereich:
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_220.png → mean_raw=71.45913, mean_norm=0.280
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_140.png → mean_raw=72.19749, mean_norm=0.283
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_40.png → mean_raw=73.35918, mean_norm=0.288
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_120.png → mean_raw=73.92576, mean_norm=0.290
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_240.png → mean_raw=74.20874, mean_norm=0.291
+
+ alle Center_cepths und deren Mittel:
+
+[41.2007     50.71031111 73.92575556 72.19748889 57.70025556 48.88878889
+ 51.78466667 54.60254444 71.45913333 74.20874444 62.85232222 61.32357778
+ 68.06824444 69.40862222 54.2669     73.35917778 70.26467778 46.65441111]
+61.270906790123455
+All ABOVE Center Depth Mean:
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_120.png → mean_center_depth=73.92576, mean_center_norm=0.290
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_140.png → mean_center_depth=72.19749, mean_center_norm=0.283
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_220.png → mean_center_depth=71.45913, mean_center_norm=0.280
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_240.png → mean_center_depth=74.20874, mean_center_norm=0.291
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_260.png → mean_center_depth=62.85232, mean_center_norm=0.246
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_280.png → mean_center_depth=61.32358, mean_center_norm=0.240
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_300.png → mean_center_depth=68.06824, mean_center_norm=0.267
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_320.png → mean_center_depth=69.40862, mean_center_norm=0.272
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_40.png → mean_center_depth=73.35918, mean_center_norm=0.288
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_60.png → mean_center_depth=70.26468, mean_center_norm=0.276
+
+All BELOW or EQUAL Center Depth Mean:
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_0.png → mean_center_depth=41.20070, mean_center_norm=0.162
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_100.png → mean_center_depth=50.71031, mean_center_norm=0.199
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_160.png → mean_center_depth=57.70026, mean_center_norm=0.226
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_180.png → mean_center_depth=48.88879, mean_center_norm=0.192
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_20.png → mean_center_depth=51.78467, mean_center_norm=0.203
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_200.png → mean_center_depth=54.60254, mean_center_norm=0.214
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_340.png → mean_center_depth=54.26690, mean_center_norm=0.213
+img_cc6b8656-d52e-42d1-ab10-542588c9f9f0_80.png → mean_center_depth=46.65441, mean_center_norm=0.183
+runtime: 25.372 seconds
+
+
+
+
+
+
+
+
+---- Analysis: Distance to center point -----
+
+Top 5 greatest depth: 46.32493928760188, 102.47438704378767, 105.43718509140881, 106.50821564555478, 107.80074211247342
+Top 5 minimal Distances: 304.9606531997202, 283.69349657685143, 272.0606550017845, 259.40894356209077, 249.41932563456265
+Mean Distance: 190.537169361515 px
+
+Images ABOVE mean distance:
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_100.png → 227.31 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_120.png → 249.42 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_180.png → 202.20 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_20.png → 272.06 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_200.png → 259.41 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_220.png → 232.05 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_240.png → 283.69 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_260.png → 208.54 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_320.png → 237.19 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_340.png → 304.96 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_40.png → 216.27 px
+
+Images BELOW or EQUAL mean distance:
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_0.png → 46.32 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_140.png → 106.51 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_160.png → 150.22 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_280.png → 105.44 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_300.png → 107.80 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_60.png → 117.80 px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_80.png → 102.47 px
+
+----- Analysis: relative depths -----
+
+Top 5 tiefste Bilder (roh):
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_160.png → depth_raw=1.00000, depth_norm=0.004, dist=150.2px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_220.png → depth_raw=2.00000, depth_norm=0.008, dist=232.1px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_300.png → depth_raw=2.00000, depth_norm=0.008, dist=107.8px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_200.png → depth_raw=2.00000, depth_norm=0.008, dist=259.4px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_180.png → depth_raw=3.00000, depth_norm=0.012, dist=202.2px
+
+Top 5 flachste Bilder (roh):
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_140.png → depth_raw=24.00000, depth_norm=0.094, dist=106.5px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_60.png → depth_raw=25.00000, depth_norm=0.098, dist=117.8px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_100.png → depth_raw=27.00000, depth_norm=0.106, dist=227.3px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_120.png → depth_raw=29.00000, depth_norm=0.114, dist=249.4px
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_20.png → depth_raw=36.00000, depth_norm=0.141, dist=272.1px
+
+----- Center Region Depth Analysis -----
+
+Top 5 Bilder mit tiefstem zentralem Bereich:
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_240.png → mean_raw=24.84016, mean_norm=0.097
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_220.png → mean_raw=26.69368, mean_norm=0.105
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_260.png → mean_raw=32.90236, mean_norm=0.129
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_200.png → mean_raw=37.53833, mean_norm=0.147
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_0.png → mean_raw=48.81623, mean_norm=0.191
+
+Top 5 Bilder mit flachstem zentralem Bereich:
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_40.png → mean_raw=68.07377, mean_norm=0.267
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_20.png → mean_raw=90.44614, mean_norm=0.355
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_300.png → mean_raw=92.56187, mean_norm=0.363
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_340.png → mean_raw=100.55419, mean_norm=0.394
+img_6f34a62d-c8be-429d-b266-b1aca354ae1d_320.png → mean_raw=128.20897, mean_norm=0.503
+runtime: 25.459 seconds
+
+
+
+
+
+
+
+
+
+
+
+
+
+----- Analysis: Distance to center point -----
+
+Top 5 greatest depth: 62.26556030423239, 68.35202996254024, 71.7007670809734, 76.40026177965623, 88.60022573334675
+Top 5 minimal Distances: 304.4289736539543, 302.48305737677276, 287.8367592924851, 274.5632896073326, 248.94376875109768
+Mean Distance: 174.42646714774506 px
+
+Images ABOVE mean distance:
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_140.png → 302.48 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_20.png → 177.55 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_240.png → 274.56 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_280.png → 203.16 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_300.png → 238.42 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_320.png → 248.94 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_40.png → 287.84 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_60.png → 304.43 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_80.png → 182.58 px
+
+Images BELOW or EQUAL mean distance:
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_0.png → 62.27 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_100.png → 68.35 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_120.png → 145.50 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_160.png → 88.60 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_180.png → 174.27 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_200.png → 76.40 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_220.png → 71.70 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_260.png → 120.97 px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_340.png → 111.65 px
+
+----- Analysis: relative depths -----
+
+Top 5 tiefste Punkte (roh):
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_80.png → depth_raw=0.00000, depth_norm=0.000, dist=182.6px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_100.png → depth_raw=0.00000, depth_norm=0.000, dist=68.4px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_120.png → depth_raw=0.00000, depth_norm=0.000, dist=145.5px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_60.png → depth_raw=0.00000, depth_norm=0.000, dist=304.4px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_240.png → depth_raw=3.00000, depth_norm=0.012, dist=274.6px
+
+Top 5 flachste Punkte (roh):
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_220.png → depth_raw=7.00000, depth_norm=0.027, dist=71.7px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_20.png → depth_raw=7.00000, depth_norm=0.027, dist=177.6px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_0.png → depth_raw=8.00000, depth_norm=0.031, dist=62.3px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_320.png → depth_raw=12.00000, depth_norm=0.047, dist=248.9px
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_40.png → depth_raw=14.00000, depth_norm=0.055, dist=287.8px
+
+----- Center Region Depth Analysis -----
+
+Top 5 Bilder mit tiefstem zentralem Bereich:
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_60.png → mean_raw=42.21223, mean_norm=0.166
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_340.png → mean_raw=48.94757, mean_norm=0.192
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_260.png → mean_raw=49.58713, mean_norm=0.194
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_80.png → mean_raw=55.11188, mean_norm=0.216
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_240.png → mean_raw=55.26199, mean_norm=0.217
+
+Top 5 Bilder mit flachstem zentralem Bereich:
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_140.png → mean_raw=81.13758, mean_norm=0.318
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_320.png → mean_raw=84.87360, mean_norm=0.333
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_180.png → mean_raw=86.00844, mean_norm=0.337
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_200.png → mean_raw=87.40911, mean_norm=0.343
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_120.png → mean_raw=95.23762, mean_norm=0.373
+
+ alle Center_cepths und deren Mittel:
+
+[73.73875556 72.26238889 95.23762222 81.13757778 55.39884444 86.00844444
+ 80.95254444 87.40911111 66.15963333 55.26198889 49.58713333 59.37597778
+ 78.78158889 84.8736     48.94756667 58.94717778 42.21223333 55.11187778]
+68.41133703703704
+All ABOVE Center Depth Mean:
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_0.png → mean_center_depth=73.73876, mean_center_norm=0.289
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_100.png → mean_center_depth=72.26239, mean_center_norm=0.283
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_120.png → mean_center_depth=95.23762, mean_center_norm=0.373
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_140.png → mean_center_depth=81.13758, mean_center_norm=0.318
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_180.png → mean_center_depth=86.00844, mean_center_norm=0.337
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_20.png → mean_center_depth=80.95254, mean_center_norm=0.317
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_200.png → mean_center_depth=87.40911, mean_center_norm=0.343
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_300.png → mean_center_depth=78.78159, mean_center_norm=0.309
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_320.png → mean_center_depth=84.87360, mean_center_norm=0.333
+
+All BELOW or EQUAL Center Depth Mean:
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_160.png → mean_center_depth=55.39884, mean_center_norm=0.217
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_220.png → mean_center_depth=66.15963, mean_center_norm=0.259
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_240.png → mean_center_depth=55.26199, mean_center_norm=0.217
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_260.png → mean_center_depth=49.58713, mean_center_norm=0.194
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_280.png → mean_center_depth=59.37598, mean_center_norm=0.233
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_340.png → mean_center_depth=48.94757, mean_center_norm=0.192
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_40.png → mean_center_depth=58.94718, mean_center_norm=0.231
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_60.png → mean_center_depth=42.21223, mean_center_norm=0.166
+img_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247_80.png → mean_center_depth=55.11188, mean_center_norm=0.216
+runtime: 13.067 seconds
+
+
+
+
+
+
+
+
+----- Analysis: Distance to center point -----
+
+Top 5 greatest depth: 51.62363799656123, 53.36665625650534, 54.589376255824725, 61.40032573203501, 73.55270219373317
+Top 5 minimal Distances: 301.0664378505183, 262.20793275566626, 256.5345980564805, 247.14570601165622, 242.8373941550189
+Mean Distance: 157.64878255004564 px
+
+Images ABOVE mean distance:
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_120.png → 179.23 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_160.png → 247.15 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_180.png → 242.84 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_240.png → 183.36 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_300.png → 240.56 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_320.png → 301.07 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_40.png → 256.53 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_60.png → 262.21 px
+
+Images BELOW or EQUAL mean distance:
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_0.png → 54.59 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_100.png → 51.62 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_140.png → 156.00 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_20.png → 121.85 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_200.png → 88.41 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_220.png → 73.55 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_260.png → 53.37 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_280.png → 61.40 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_340.png → 157.17 px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_80.png → 106.78 px
+
+----- Analysis: relative depths -----
+
+Top 5 tiefste Punkte (roh):
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_300.png → depth_raw=2.00000, depth_norm=0.008, dist=240.6px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_280.png → depth_raw=2.00000, depth_norm=0.008, dist=61.4px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_80.png → depth_raw=3.00000, depth_norm=0.012, dist=106.8px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_180.png → depth_raw=3.00000, depth_norm=0.012, dist=242.8px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_240.png → depth_raw=3.00000, depth_norm=0.012, dist=183.4px
+
+Top 5 flachste Punkte (roh):
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_40.png → depth_raw=8.00000, depth_norm=0.031, dist=256.5px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_20.png → depth_raw=8.00000, depth_norm=0.031, dist=121.9px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_320.png → depth_raw=9.00000, depth_norm=0.035, dist=301.1px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_140.png → depth_raw=20.00000, depth_norm=0.078, dist=156.0px
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_160.png → depth_raw=24.00000, depth_norm=0.094, dist=247.1px
+
+----- Center Region Depth Analysis -----
+
+Top 5 Bilder mit tiefstem zentralem Bereich:
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_260.png → mean_raw=41.78080, mean_norm=0.164
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_100.png → mean_raw=45.07342, mean_norm=0.177
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_280.png → mean_raw=48.65946, mean_norm=0.191
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_80.png → mean_raw=49.67596, mean_norm=0.195
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_240.png → mean_raw=50.04157, mean_norm=0.196
+
+Top 5 Bilder mit flachstem zentralem Bereich:
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_300.png → mean_raw=67.57042, mean_norm=0.265
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_160.png → mean_raw=71.96982, mean_norm=0.282
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_180.png → mean_raw=72.16409, mean_norm=0.283
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_340.png → mean_raw=75.06483, mean_norm=0.294
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_320.png → mean_raw=79.01479, mean_norm=0.310
+
+ alle Center_cepths und deren Mittel:
+
+[62.57001111 45.07342222 51.25051111 60.53903333 71.96982222 72.16408889
+ 57.8798     65.30217778 59.5225     50.04156667 41.7808     48.65945556
+ 67.57042222 79.01478889 75.06483333 61.9578     62.50927778 49.67595556]
+60.14145925925925
+All ABOVE Center Depth Mean:
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_0.png → mean_center_depth=62.57001, mean_center_norm=0.245
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_140.png → mean_center_depth=60.53903, mean_center_norm=0.237
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_160.png → mean_center_depth=71.96982, mean_center_norm=0.282
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_180.png → mean_center_depth=72.16409, mean_center_norm=0.283
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_200.png → mean_center_depth=65.30218, mean_center_norm=0.256
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_300.png → mean_center_depth=67.57042, mean_center_norm=0.265
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_320.png → mean_center_depth=79.01479, mean_center_norm=0.310
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_340.png → mean_center_depth=75.06483, mean_center_norm=0.294
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_40.png → mean_center_depth=61.95780, mean_center_norm=0.243
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_60.png → mean_center_depth=62.50928, mean_center_norm=0.245
+
+All BELOW or EQUAL Center Depth Mean:
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_100.png → mean_center_depth=45.07342, mean_center_norm=0.177
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_120.png → mean_center_depth=51.25051, mean_center_norm=0.201
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_20.png → mean_center_depth=57.87980, mean_center_norm=0.227
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_220.png → mean_center_depth=59.52250, mean_center_norm=0.233
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_240.png → mean_center_depth=50.04157, mean_center_norm=0.196
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_260.png → mean_center_depth=41.78080, mean_center_norm=0.164
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_280.png → mean_center_depth=48.65946, mean_center_norm=0.191
+img_2ad5a6fe-14bb-4f07-8ee5-780c7e068fee_80.png → mean_center_depth=49.67596, mean_center_norm=0.195
+runtime: 12.927 seconds
