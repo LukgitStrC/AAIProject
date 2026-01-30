@@ -4,9 +4,79 @@ import numpy as np
 import time
 import os
 import shutil
+from scipy.ndimage import map_coordinates
+from tqdm import tqdm
+
 import warnings
 warnings.filterwarnings("ignore")
 
+
+
+# -----------------------------------------
+#       Reframing Street-View-Panorama
+# -----------------------------------------
+
+def map_to_sphere(x, y, z, yaw_radian, pitch_radian):
+
+
+    theta = np.arccos(z / np.sqrt(x ** 2 + y ** 2 + z ** 2))
+    phi = np.arctan2(y, x)
+
+    # Apply rotation transformations here
+    theta_prime = np.arccos(np.sin(theta) * np.sin(phi) * np.sin(pitch_radian) +
+                            np.cos(theta) * np.cos(pitch_radian))
+
+    phi_prime = np.arctan2(np.sin(theta) * np.sin(phi) * np.cos(pitch_radian) -
+                           np.cos(theta) * np.sin(pitch_radian),
+                           np.sin(theta) * np.cos(phi))
+    phi_prime += yaw_radian
+    phi_prime = phi_prime % (2 * np.pi)
+
+    return theta_prime.flatten(), phi_prime.flatten()
+
+
+def interpolate_color(coords, img, method='bilinear'):
+    order = {'nearest': 0, 'bilinear': 1, 'bicubic': 3}.get(method, 1)
+    red = map_coordinates(img[:, :, 0], coords, order=order, mode='reflect')
+    green = map_coordinates(img[:, :, 1], coords, order=order, mode='reflect')
+    blue = map_coordinates(img[:, :, 2], coords, order=order, mode='reflect')
+    return np.stack((red, green, blue), axis=-1)
+
+
+def panorama_to_plane(panorama_path, FOV, output_size, yaw, pitch):
+    panorama = Image.open(panorama_path).convert('RGB')
+    pano_width, pano_height = panorama.size
+    pano_array = np.array(panorama)
+    yaw_radian = np.radians(yaw)
+    pitch_radian = np.radians(pitch)
+
+    W, H = output_size
+    f = (0.5 * W) / np.tan(np.radians(FOV) / 2)
+
+    u, v = np.meshgrid(np.arange(W), np.arange(H), indexing='xy')
+
+    x = u - W / 2
+    y = H / 2 - v
+    z = f
+
+    theta, phi = map_to_sphere(x, y, z, yaw_radian, pitch_radian)
+
+    U = phi * pano_width / (2 * np.pi)
+    V = theta * pano_height / np.pi
+
+    U, V = U.flatten(), V.flatten()
+    coords = np.vstack((V, U))
+
+    colors = interpolate_color(coords, pano_array)
+    output_image = Image.fromarray(colors.reshape((H, W, 3)).astype('uint8'), 'RGB')
+
+    return output_image
+
+
+
+# ----------------
+#   Analyze Image
+# ----------------
 
 def get_depth_map(image_path):
     # ----- Create Depth-Map -----
@@ -147,6 +217,7 @@ if __name__ == "__main__":
     # img_name = "6f34a62d-c8be-429d-b266-b1aca354ae1d"
     # img_name = "61efb4ce-cdf2-4160-aaf6-f5bca9c7e247"
     # img_name = "2ad5a6fe-14bb-4f07-8ee5-780c7e068fee"
+    img_name = "46ae0047-d724-45fe-91fb-c8e93b3819eb"
 
     input_path = f"examples/out_{img_name}"             # fp to folder
     outdir_name = "results"                             # Name of general output directory
@@ -158,6 +229,26 @@ if __name__ == "__main__":
     os.makedirs(outdir, exist_ok=True)
 
     
+
+    # ---- svp reframing ----
+    panorama_path = f"svp/{img_name}.jpg"
+
+    if os.path.exists(input_path):
+        shutil.rmtree(input_path)    
+
+    os.makedirs(input_path, exist_ok=True) 
+
+
+    panorama = Image.open(panorama_path)
+    pano_width, pano_height = panorama.size
+
+    print("Reframe 360° panorama to images")
+    for deg in tqdm(np.arange(0, 360, 20)):
+        output_image = panorama_to_plane(panorama_path, 80, (600, 600), deg, 90)
+        filename = f"img_{img_name}_{int(deg)}.png"
+        filepath = os.path.join(input_path, filename)
+        output_image.save(filepath)
+
 
 
     # ---- depth analysis ----
