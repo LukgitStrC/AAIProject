@@ -4,8 +4,6 @@ import numpy as np
 import time
 import os
 import shutil
-
-
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -70,12 +68,10 @@ def get_dist_to_center(orig_img_np, depth_map_np):
     y_start_orig = int(orig_h * y_ratio - orig_h * strip_height_ratio / 2)
     y_end_orig = int(orig_h * y_ratio + orig_h * strip_height_ratio / 2)
 
-
     # ----- get point of maximal depth in strip -----
     y_strip, x_strip = np.unravel_index(np.argmin(depth_strip, axis=None), depth_strip.shape)
     x_depth = x_strip
     x_orig = int(x_depth * orig_w / W)  # point of max depth on original image
-
 
     # ----- get area of maximal depth in strip -----
     tolerance = 1e-5
@@ -85,7 +81,6 @@ def get_dist_to_center(orig_img_np, depth_map_np):
         x_orig = int(x_pt * orig_w / W)
         y_orig = int((y_pt / strip_h) * (y_end_orig - y_start_orig)) + y_start_orig
 
-
     # ----- get mean of maximal depth area -----
     center_x_img = orig_w // 2
     center_y_img = orig_h // 2
@@ -93,19 +88,48 @@ def get_dist_to_center(orig_img_np, depth_map_np):
     max_depth_point = np.array([x_orig, y_orig])
     image_center = np.array([center_x_img, center_y_img])
 
-
-
     # ----- calculate distance to image center point -----
     distance = np.linalg.norm(max_depth_point - image_center)
 
     return distance
 
 
-def save_max_depth_images(input_path, img_names, dist_list, outdir):
 
-    for f in dist_list:
-        img_fp = f"{input_path}/{img_names[f]}"
-        shutil.copy(img_fp, outdir)
+def get_images_within_angle(file_paths, target_deg):
+    matching_files = []
+    tolerance = 20
+
+    for path in file_paths:
+        base = os.path.basename(path)
+        name, _ = os.path.splitext(base)
+        angle_str = name.split("_")[-1]
+
+        try:
+            angle = float(angle_str)
+        except ValueError:
+            continue
+
+        if abs(angle - target_deg) <= tolerance:
+            matching_files.append(path)
+        
+        elif target_deg == 0 and angle == 360 - tolerance:
+            matching_files.append(path)
+
+        elif target_deg == 360 and angle == tolerance:
+            matching_files.append(path)
+
+    return matching_files
+
+
+def save_min_dist_images(input_path, image_group, distance_list, outdir):
+
+    max_idx = distance_list.index(min(distance_list))
+    best_image = image_group[max_idx]
+    img_fp = f"{input_path}/{best_image}"
+    shutil.copy(img_fp, outdir)
+    print(f"Saved {img_fp} to {outdir}")
+
+
 
 
 
@@ -121,9 +145,8 @@ if __name__ == "__main__":
     # ---- Params ----
     img_name = "cc6b8656-d52e-42d1-ab10-542588c9f9f0"   # Image ID of Panoramax SVP
     # img_name = "6f34a62d-c8be-429d-b266-b1aca354ae1d"
-    # img_name = "out_61efb4ce-cdf2-4160-aaf6-f5bca9c7e247"
     # img_name = "61efb4ce-cdf2-4160-aaf6-f5bca9c7e247"
-    img_name = "2ad5a6fe-14bb-4f07-8ee5-780c7e068fee"
+    # img_name = "2ad5a6fe-14bb-4f07-8ee5-780c7e068fee"
 
     input_path = f"examples/out_{img_name}"             # fp to folder
     outdir_name = "results"                             # Name of general output directory
@@ -138,45 +161,64 @@ if __name__ == "__main__":
 
 
     # ---- depth analysis ----
+    depthmap_list = {}
+    orig_img_list = {}
+    mean_center_depth = np.array([])
+    mcd_list = np.array([])
+    degs_mcd = {}
+    potential_streets_list = []
     dist_list = np.array([])
-    mean_center_depth  = np.array([])
-
+    
 
     if os.path.isdir(input_path):
         files = [f for f in os.listdir(input_path) if os.path.isfile(os.path.join(input_path, f))]
         region_ratio = 0.4      # Area around image center for mean depth anaylsis
         
+
         # Filter for relevant images (street) 
         for img_fp in files:                                                                    # for each image in folder
             orig_img, depth_map = get_depth_map(f"{input_path}/{img_fp}")                       # get depth-map
             mean_center_depth = get_center_region_mean_depth(depth_map, region_ratio)           # get mean depth in image center
+
+            base = os.path.basename(img_fp)
+            name, _ = os.path.splitext(base)
+            angle = int(name.split("_")[-1])                                                    # get image angle
+
+            depthmap_list[angle] = depth_map
+            orig_img_list[angle] = orig_img
             mcd_list = np.append(mcd_list, mean_center_depth)
+            degs_mcd[mean_center_depth] = angle
 
         mean_img_depth = np.mean(mcd_list)                                                      # get mean of all image center depths
-        mcd_list = sorted(mcd_list)
+        sorted_mcd = np.flip(np.sort(mcd_list))       
 
-        for d in mcd_list:                          # for each image 
-            if d <= mean_img_depth:                 # lower bound
+
+
+        for d in sorted_mcd:                          
+            deg = degs_mcd.get(d)
+
+            if d <= mean_img_depth:     # lower bound
                 continue
-            elif:
-                for img_fp in files:
-                #     Wurde ein Bild mit benachbartem Winkel eingefügt?
-                #         JA: Skip
-                #     Nein: Einfügen als potentielle Straße
+            elif any(abs(int(existing_deg) - deg) <= 20 for existing_deg in potential_streets_list):   # neighboring picture (angle +-20) in potential streets
+                continue
+            elif len(potential_streets_list) >= 5:
+                continue
 
-                # Pro Bild potentielle Straße
-                #     benachbarte Bilder nehmen (Gruppieren)
-                #         Pro Bild in Gruppe:
-                #             Distanz Tiefster Punkt zum Bildmittelpunkt
-                #             Auswahl des Bildes mit geringster Distanz
-
-                #             => Dieses Bild speichern als Straßenbild zur Klassifizierung
-                
+            potential_streets_list.append(deg)
 
 
-
-        # save_max_depth_images(input_path, files, topMax, outdir)
-
+        
+        for ps_deg in potential_streets_list:                           # for all potential streets
+            ps_group = get_images_within_angle(files, ps_deg)           # get neighboring images
+            distances = []
+            for m in ps_group:
+                angle = int(os.path.splitext(m)[0].split("_")[-1])
+                dm = depthmap_list[angle]
+                oi = orig_img_list[angle]
+                dist = get_dist_to_center(oi, dm)                        # get distance from image center to point of max depth
+                distances.append(dist)
+            
+            save_min_dist_images(input_path, ps_group, distances, outdir)           # save image with min distance for classification
     else:
         print("Input is not a folder. Stopping..")
         
