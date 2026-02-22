@@ -214,3 +214,6 @@ streetview_images/synthetic_generator
 streetview_images/dataset_french_signs
 
 Part1_satelliteImages/dataset_caen
+streetview_images/panoramax_fr_road_signs_subsigns
+Part3_streetview_image_at_loc/streetview_images
+weights
