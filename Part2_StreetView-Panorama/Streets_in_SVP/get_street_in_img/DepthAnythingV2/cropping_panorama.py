@@ -50,62 +50,62 @@ class DepthEstimationModel:
 
       return depth_map
   
-class StreetSegmentationModel:
-  """
-  Class for access to the street segmentation model
-  use predict to generate a mask for the original image where the model
-  evaluated, that the pixel belongs to a street
-  """
-  def __init__(self):
-    if torch.backends.mps.is_available():
-      self.device = torch.device("mps")
-      print("Using Apple Silicon MPS (Metal) for acceleration.")
-    else:
-      self.device = torch.device("cpu")
-      print("MPS not available. Falling back to CPU.")
-    model_name = "nvidia/segformer-b2-finetuned-cityscapes-1024-1024"
-    self.processor = SegformerImageProcessor.from_pretrained(model_name)
-    self.model = SegformerForSemanticSegmentation.from_pretrained(model_name)
-    self.model.to(self.device)
-    self.model.eval()
-    self.road_class_id = self.model.config.label2id.get('road', 0)
+# class StreetSegmentationModel:
+#   """
+#   Class for access to the street segmentation model
+#   use predict to generate a mask for the original image where the model
+#   evaluated, that the pixel belongs to a street
+#   """
+#   def __init__(self):
+#     if torch.backends.mps.is_available():
+#       self.device = torch.device("mps")
+#       print("Using Apple Silicon MPS (Metal) for acceleration.")
+#     else:
+#       self.device = torch.device("cpu")
+#       print("MPS not available. Falling back to CPU.")
+#     model_name = "nvidia/segformer-b2-finetuned-cityscapes-1024-1024"
+#     self.processor = SegformerImageProcessor.from_pretrained(model_name)
+#     self.model = SegformerForSemanticSegmentation.from_pretrained(model_name)
+#     self.model.to(self.device)
+#     self.model.eval()
+#     self.road_class_id = self.model.config.label2id.get('road', 0)
 
-  def predict(self, image_input):
-    """
-    Takes an image path or a numpy array (BGR from cv2) and returns a binary road mask.
-    """
-    # Load image properly depending on input type
-    if isinstance(image_input, str):
-      image = Image.open(image_input).convert("RGB")
-    else:
-      # Assume it's an OpenCV numpy array (BGR) and convert to PIL (RGB)
-      image = Image.fromarray(image_input[..., ::-1])
+#   def predict(self, image_input):
+#     """
+#     Takes an image path or a numpy array (BGR from cv2) and returns a binary road mask.
+#     """
+#     # Load image properly depending on input type
+#     if isinstance(image_input, str):
+#       image = Image.open(image_input).convert("RGB")
+#     else:
+#       # Assume it's an OpenCV numpy array (BGR) and convert to PIL (RGB)
+#       image = Image.fromarray(image_input[..., ::-1])
 
-    # Prepare inputs and move them to the M3 GPU
-    inputs = self.processor(images=image, return_tensors="pt")
-    inputs = {k: v.to(self.device) for k, v in inputs.items()}
+#     # Prepare inputs and move them to the M3 GPU
+#     inputs = self.processor(images=image, return_tensors="pt")
+#     inputs = {k: v.to(self.device) for k, v in inputs.items()}
 
-    # Run inference without calculating gradients
-    with torch.no_grad():
-      outputs = self.model(**inputs)
+#     # Run inference without calculating gradients
+#     with torch.no_grad():
+#       outputs = self.model(**inputs)
         
-    # Segformer outputs are scaled down. We must interpolate them back to the original image dimensions.
-    logits = outputs.logits
-    upsampled_logits = torch.nn.functional.interpolate(
-        logits,
-        size=image.size[::-1], # PIL size is (width, height), interpolate expects (height, width)
-        mode="bilinear",
-        align_corners=False,
-    )
+#     # Segformer outputs are scaled down. We must interpolate them back to the original image dimensions.
+#     logits = outputs.logits
+#     upsampled_logits = torch.nn.functional.interpolate(
+#         logits,
+#         size=image.size[::-1], # PIL size is (width, height), interpolate expects (height, width)
+#         mode="bilinear",
+#         align_corners=False,
+#     )
 
-    # Get the predicted class ID for each pixel
-    predicted_classes = upsampled_logits.argmax(dim=1).squeeze(0)
+#     # Get the predicted class ID for each pixel
+#     predicted_classes = upsampled_logits.argmax(dim=1).squeeze(0)
     
-    # Create a binary mask specifically for the "road" class (1 for road, 0 for everything else)
-    # Move it back to the CPU memory and convert to a standard numpy array for the rest of your pipeline
-    road_mask = (predicted_classes == self.road_class_id).cpu().numpy().astype(np.uint8)
+#     # Create a binary mask specifically for the "road" class (1 for road, 0 for everything else)
+#     # Move it back to the CPU memory and convert to a standard numpy array for the rest of your pipeline
+#     road_mask = (predicted_classes == self.road_class_id).cpu().numpy().astype(np.uint8)
 
-    return road_mask
+#     return road_mask
     
 def extract_perspective(equi_image, yaw, pitch, fov, width=600, height=600):
   """
