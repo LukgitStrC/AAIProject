@@ -12,7 +12,7 @@ from functions.p1_satImg import *
 from functions.p2_center_coords import *
 from functions.p3_svp import *
 from functions.p4_streetImages import *
-from functions.p5_streetSigns import *
+from functions.p5_detect_streetSigns import *
 
 
 
@@ -33,8 +33,8 @@ from functions.p5_streetSigns import *
 #         1 Get Satellite Image
 # ------------------------------------
 
-lat_sat, lon_sat = 49.177560, -0.380128
-img_name = "IMG 1 TEST"     # Name of Satellite Image
+lat_sat, lon_sat = 49.177324, -0.382037
+img_name = "Test 2"     # Name of Satellite Image
 
 
 tiles_radius = 2    # number of tiles around center-coords
@@ -89,7 +89,7 @@ cp_lat, cp_lon = yolo_to_geo(cx, cy, 1280, 1280, lat_sat, lon_sat, mpp)
 
 
 print("Center Point lat:", cp_lat, "Center Point lon:", cp_lon)
-print(f"{img_name}: [{lat_sat},{lon_sat}],[{cp_lat},{cp_lon}]")
+# print(f"{img_name}: [{lat_sat},{lon_sat}],[{cp_lat},{cp_lon}]")
 
 
 
@@ -150,6 +150,8 @@ for deg in tqdm(np.arange(0, 360, 20)):
 if not os.path.exists(filepath):
     print("No Street View Panorama downloaded!")
 
+
+
 # ------------------------------------
 #     5 get relevant street images
 # ------------------------------------
@@ -169,3 +171,18 @@ if not os.path.exists(filepath):
 # ------------------------------------
 #         7 classify street
 # ------------------------------------
+
+
+
+
+# ------------------------------------
+#         8 Create Result JSON
+# ------------------------------------
+
+# Koordinaten Satellitenbild (am Anfang)
+# Name Satellitenbild
+# ID Street View Panorama
+# Bilder aus SVP die Straßen zeigen
+# Straßenlabel: OneWayOut, OneWayIn, NotOneWay, Unclear
+
+# ?? -> Einzeichnen von Straßenlabels in gesamtes SVP
