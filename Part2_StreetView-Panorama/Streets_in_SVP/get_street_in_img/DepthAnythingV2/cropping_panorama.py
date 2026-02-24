@@ -3,6 +3,7 @@ import numpy as np
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForDepthEstimation,SegformerImageProcessor, SegformerForSemanticSegmentation
 import cv2
+import skimage.io as io
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 from scipy.ndimage import gaussian_filter1d
