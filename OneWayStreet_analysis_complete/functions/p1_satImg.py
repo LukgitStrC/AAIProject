@@ -64,12 +64,12 @@ def predict_intersection(save_dir, image_path, model_path="yolov11n-seg.pt"):
 
     # load model
     model = YOLO(model_path)
+    model.to('mps')
 
     # segment image (prediction)
     results = model.predict(
         source=image_path,
         imgsz=512,     
-        device=0,      # GPU
         conf=0.4,      # Confidence
         max_det=1,     # only 1 Detection per Image
         save=True,

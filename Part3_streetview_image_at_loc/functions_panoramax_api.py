@@ -47,7 +47,7 @@ def download_image(picture_id):
 
         output_path = f"{OUT_DIR}/{picture_id}.png"
         
-        with open(f"", 'wb') as file:
+        with open(output_path, 'wb') as file:
             file.write(image_response.content)
         print(f"Success! Image saved to: {output_path}")
         return data

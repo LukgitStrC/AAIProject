@@ -20,88 +20,95 @@ from functions.p5_detect_streetSigns import *
 #     1. Get Satellite Image at give geo-coordinates
 #     2. Get Center point of intersection in satellite Image
 #     3. Download nearest Street View Panorama at intersection center
-#     4. Split Street View Panorama into normal street images
-#     5. Get relevant street images
-#     6. Search for relevant street signs
-#     7. Classify as One-Way Street or not
+#     4. Split Street View Panorama into normal street images contianing only single street entrances
+#     5. detect street signs and classify them
 
+# INPUT
+# coordinates of intersection (with available 360 streetview on panoramax instance)
+lat_sat, lon_sat = 49.18278, -0.35821
+identifier = "test1" 
 
+# Folder structure
+res_dir = 'results'
+model_dir = 'models'
 
+abs_script_dir = os.path.dirname(os.path.abspath(__file__))
 
+if res_dir:
+    shutil.rmtree(res_dir)
+os.makedirs(res_dir, exist_ok=True)
+
+sat_img_dir = os.path.join(res_dir,'sat')
+intersection_dir = os.path.join(res_dir,'intersection')
+svp_images_dir = os.path.join(res_dir,'svp')
+crops_dir = os.path.join(res_dir,'crops')
+
+os.makedirs(sat_img_dir, exist_ok=True)
+os.makedirs(intersection_dir, exist_ok=True)
+os.makedirs(svp_images_dir, exist_ok=True)
+os.makedirs(crops_dir, exist_ok=True)
+
+SAT_IMG_SUFFIX = '_SAT'
+INTERS_SUFFIX = '_INTERS'
+SVP_SUFFIX = '_SVP'
+CROP_SUFFIX = '_CROP'
+
+# paths
+sat_img_path = os.path.join(sat_img_dir,f'{identifier}{SAT_IMG_SUFFIX}.png')
+intersection_img_path = os.path.join(intersection_dir,'predict',f'{identifier}{SAT_IMG_SUFFIX}.jpg')
+intersection_label_path = os.path.join(intersection_dir,'predict','labels',f'{identifier}{SAT_IMG_SUFFIX}.txt')
+svp_img_path = os.path.join(svp_images_dir,f'{identifier}{SVP_SUFFIX}.png')
+# number of crops is dynamic, so their paths are also dynamic
+
+seg_model_path = os.path.join(model_dir,'segmentation','best.pt') 
 
 # ------------------------------------
 #         1 Get Satellite Image
 # ------------------------------------
-
-lat_sat, lon_sat = 49.177324, -0.382037
-img_name = "Test 2"     # Name of Satellite Image
-
 
 tiles_radius = 2    # number of tiles around center-coords
 zoom = 21       # Std = 21
 api_key = "qR5z0FXl7vgm9kk146HC"
 map_img = build_map(lat_sat, lon_sat, zoom, tiles_radius, api_key)
 
-img_input_fp = "results/input_satImg"
-os.makedirs(img_input_fp, exist_ok=True)
-map_img.save(f"{img_input_fp}/{img_name}.png") 
-if os.path.exists(f"{img_input_fp}/{img_name}.png"):
+map_img.save(sat_img_path) 
+if os.path.exists(sat_img_path):
     print("Download of satellite image successful!")
 
-
-os.makedirs("results/intersections_pred", exist_ok=True)       # Create/Check for predictionsfolder
-save_dir = f"results/intersections_pred/{img_name}"            # save in predictions-folder for each image processed
-os.makedirs(save_dir, exist_ok=True)
-if save_dir:
-    shutil.rmtree(save_dir)                     # deletes previous results
-
-
 # Segmentation/Prediction
+# absolute path to intersection dir is needed because of yolos habit of saving
+# per default to the venv root/runs folder
+abs_intersection_dir = os.path.join(abs_script_dir, intersection_dir)
+
 results = predict_intersection(
-    save_dir=save_dir,
-    image_path= f"{img_input_fp}/{img_name}.png",   # image save-path
-    model_path="models/segmentation/best.pt",       # Path to YOLO-model
+    save_dir=abs_intersection_dir,
+    image_path= sat_img_path,
+    model_path=seg_model_path
 )
 
-
-if not save_dir:
-    print(f"No Predictions for image {img_name}")
-else: print("Segmentation of intersection successful!")
-
-
+print("Segmentation of intersection successful!")
 
 # ------------------------------------
 #      2 Get intersection center
 # ------------------------------------
 
-
 # prediction image/labels to get center point
-image_path = f"{save_dir}/predict/{img_name}.jpg"
-label_path = f"{save_dir}/predict/labels/{img_name}.txt"
 
 # Get and Visualize center point
-center_point = center_point_visualize(image_path, label_path)
+center_point = center_point_visualize(intersection_img_path, intersection_label_path)
 
 # Get geo Coords of Center Point
 cx, cy = center_point[0], center_point[1]
 mpp = get_meters_per_pixel(lat_sat, zoom)
 cp_lat, cp_lon = yolo_to_geo(cx, cy, 1280, 1280, lat_sat, lon_sat, mpp)
 
-
 print("Center Point lat:", cp_lat, "Center Point lon:", cp_lon)
-# print(f"{img_name}: [{lat_sat},{lon_sat}],[{cp_lat},{cp_lon}]")
-
-
-
-
-
+print(f"{identifier}: [{lat_sat},{lon_sat}],[{cp_lat},{cp_lon}]")
 # ------------------------------------
 #      3 Download adjacent SVP
 # ------------------------------------
 
 # Configuration 
-OUT_DIR = "results/svp_images"
-os.makedirs(OUT_DIR, exist_ok=True)       # Create/Check for svp_image
 BASE_URL = "https://api.panoramax.xyz"
 SEARCH_URL = f"{BASE_URL}/api/search"
 
@@ -116,73 +123,35 @@ for x in found_svp:
 min_dist_idx = svp_dist.index(min(svp_dist))
 svp = found_svp[min_dist_idx]
 svp_id = svp.get('id')
-found_svp = download_images_from_features([svp], OUT_DIR)
+found_svp_path = download_images_from_features([svp], svp_images_dir)[0]['path']
 
-
-svp_path = f"{OUT_DIR}/{svp_id}.jpg"
-if not os.path.exists(svp_path):
+if not os.path.exists(svp_img_path):
     print("No Street View Panorama downloaded!")
 
 
+# ------------------------------------------
+#      4 Get relevant image crops
+# ------------------------------------------
+img = cv2.imread(found_svp_path)
+depth_model = DepthEstimationModel()
+# use ML model to estimate depth of image as heuristic for streetviews in cities
+depth_map = depth_model.predict(img)
+# from this depth map the direction of streets can be estimated using peak detection
+angles = find_street_angles(depth_map)
+# then the crops can be extracted
+image_crops = extract_street_views(img, angles)
 
-
-# ------------------------------------
-#           4 Split SVP
-# ------------------------------------
-
-streetImg_output_dir = f"results/svp_split/{svp_id}"
-if os.path.exists(streetImg_output_dir):
-    shutil.rmtree(streetImg_output_dir)    
-
-os.makedirs(streetImg_output_dir, exist_ok=True) 
-
-
-panorama = Image.open(svp_path)
-pano_width, pano_height = panorama.size
-
-
-for deg in tqdm(np.arange(0, 360, 20)):
-    output_image = panorama_to_plane(svp_path, 80, (600, 600), deg, 90)
-    filename = f"img_{svp_id}_{int(deg)}.png"
-    filepath = os.path.join(streetImg_output_dir, filename)
-    output_image.save(filepath)
-
-if not os.path.exists(filepath):
-    print("No Street View Panorama downloaded!")
-
-
+# save crops to file system
+crop_paths = []
+for crop, yaw in zip(image_crops, angles):
+    crop_path = os.path.join(crops_dir,f'{identifier}{yaw}{CROP_SUFFIX}.png')
+    cv2.imwrite(crop_path,crop)
+    crop_paths.append(crop_path)
 
 # ------------------------------------
-#     5 get relevant street images
+#        5 classify street
 # ------------------------------------
 
-
-
-
-
-# ------------------------------------
-#        6 detect street signs
-# ------------------------------------
-
-
-
-
-
-# ------------------------------------
-#         7 classify street
-# ------------------------------------
-
-
-
-
-# ------------------------------------
-#         8 Create Result JSON
-# ------------------------------------
-
-# Koordinaten Satellitenbild (am Anfang)
-# Name Satellitenbild
-# ID Street View Panorama
-# Bilder aus SVP die Straßen zeigen
-# Straßenlabel: OneWayOut, OneWayIn, NotOneWay, Unclear
-
-# ?? -> Einzeichnen von Straßenlabels in gesamtes SVP
+for crop_path, yaw in zip(crop_paths,angles):
+    crop_label = classify_street(crop_path)
+    print(f'The street at angle {yaw} is a {crop_label.value}')
