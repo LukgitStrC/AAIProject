@@ -1,5 +1,5 @@
 from ultralytics import YOLO
-import skimage.io as io
+import cv2
 from enum import Enum
 
 # model used for sign detection
@@ -16,13 +16,15 @@ class StreetLabel(Enum):
   """
   Labels to classify each crop (and therefore each street entrance)
   """
-  ONE_WAY_EXIT = 0
-  ONE_WAY_ENTRY = 1
-  BOTH = 2
-  NONE = 3
+  ONE_WAY_EXIT = 'ONE_WAY_EXIT'
+  ONE_WAY_ENTRY = 'ONE_WAY_ENTRY'
+  BOTH = 'OPAQUE_STREET'
+  NONE = 'TWO_WAY_STREET'
+
+
 
 def detect_and_classify(image_path):
-  img = io.imread(image_path)
+  img = cv2.imread(image_path)
   det_results = detect_face_plate_sign_model(img)[0]
   final_results = []
   for box in det_results.boxes:
@@ -34,6 +36,7 @@ def detect_and_classify(image_path):
       top_class_idx = cls_results.probs.top1
       class_name = cls_results.names[top_class_idx]
       cls_conf = cls_results.probs.top1conf.item()
+      print(f'{class_name} Sign detected')
       final_results.append({
           "box": [x1, y1, x2, y2],
           "det_conf": conf,

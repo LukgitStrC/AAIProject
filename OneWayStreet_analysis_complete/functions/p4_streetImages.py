@@ -221,4 +221,3 @@ def display_extracted_streets(images, yaws=None):
         ax.set_title(f"Street View {i+1}")
   plt.tight_layout()
   plt.show()
-
