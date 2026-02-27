@@ -4,11 +4,11 @@
         -0.35821
     ],
     "center": [
-        49.18287743816485,
-        -0.35827581499642314
+        49.18287660932222,
+        -0.358276416298338
     ],
     "panoramax_instance": "https://api.panoramax.xyz",
-    "svp_search_radius": 3.0,
+    "svp_search_radius": 5.0,
     "panoramax_picture": {
         "id": "99a63e61-7c55-4963-a047-198ec57d07cb",
         "bbox": [
@@ -285,8 +285,8 @@
             "https://stac-extensions.github.io/perspective-imagery/v1.0.0/schema.json",
             "https://stac-extensions.github.io/tiled-assets/v1.0.0/schema.json"
         ],
-        "distance_from_location": 1.6472378725310823,
-        "path": "results/svp/test1_SVP.png"
+        "distance_from_location": 1.5862802896963282,
+        "path": "results\\svp\\test1_SVP.png"
     },
     "roads": [
         {

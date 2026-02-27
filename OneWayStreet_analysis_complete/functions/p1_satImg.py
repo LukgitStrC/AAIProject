@@ -64,7 +64,7 @@ def predict_intersection(save_dir, image_path, model_path="yolov11n-seg.pt"):
 
     # load model
     model = YOLO(model_path)
-    model.to('mps')
+    model.to('cuda')
 
     # segment image (prediction)
     results = model.predict(

@@ -1,0 +1,76 @@
+% !TEX root = ../Grunddatei.tex
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{caption} % normale 
+\usepackage{subcaption}
+\usepackage{here}
+\usepackage{color}
+\usepackage{textcomp}
+\usepackage{pdfpages}
+\usepackage[paper=a4paper,left=25mm,right=25mm,top=25mm,bottom=25mm]{geometry}
+\captionsetup{justification=raggedright,singlelinecheck=false}  % linksbündig
+
+
+%Zeilenabstände und Seitenr‰nder
+\usepackage{setspace}
+\usepackage{geometry}
+
+\usepackage[
+automark, %Kapitelangaben in Kopfzeile automatisch erstellen
+headsepline, %Trennlinie unter Kopfzeile
+ilines %Trennlinie linksbündig ausrichten
+]{scrlayer-scrpage}
+
+%fortlaufendes Durchnummerieren der Fußnoten
+\usepackage{chngcntr}
+
+%wichtig für korrekte Zitierweise
+\usepackage[numbers,square]{natbib}
+
+%für lange Tabellen -----------------------------------------------------------
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage{pdflscape}
+
+%Abkürzungsbibliothek
+\usepackage[printonlyused]{acronym}
+
+%Code
+\usepackage{listings}
+\usepackage{Metadaten/arial/latex/uarial}
+\lstset{
+    basicstyle=\scriptsize\ttfamily, 	% Default font
+	numbers=left,              			% Location of line numbers
+    numberstyle=\tiny,          		% Style of line numbers
+    % stepnumber=2,              		% Margin between line numbers
+    numbersep=5pt,             			% Margin between line numbers and text
+    tabsize=2,                  		% Size of tabs
+    extendedchars=true,
+    breaklines=true,            		% Lines will be wrapped
+    keywordstyle=\color{red},
+    frame=single,
+    % keywordstyle=[1]\textbf,
+    % keywordstyle=[2]\textbf,
+    % keywordstyle=[3]\textbf,
+    % keywordstyle=[4]\textbf,   \sqrt{\sqrt{}}
+    stringstyle=\color{white}\ttfamily, % Color of strings
+    showspaces=false,
+    showtabs=false,
+    xleftmargin=17pt,
+    %framexleftmargin=17pt,
+    %framexrightmargin=5pt,
+    %framexbottommargin=4pt,
+    % backgroundcolor=\color{lightgray},
+	showstringspaces=false,
+	numberbychapter=true
+}
+
+\usepackage{chngcntr}
+\counterwithin{figure}{section}
+
+\usepackage[perpage]{footmisc}

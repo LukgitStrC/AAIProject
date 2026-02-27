@@ -4,11 +4,11 @@ from enum import Enum
 
 # model used for sign detection
 detect_face_plate_sign_model = YOLO("https://huggingface.co/Panoramax/detect_face_plate_sign/resolve/main/yolov8s_panoramax.pt")
-detect_face_plate_sign_model.to('mps') # optional use the device that you have
+detect_face_plate_sign_model.to('cuda') # optional use the device that you have
 
 # model used for classification
 classification_model = YOLO("https://huggingface.co/Panoramax/classify_fr_road_signs/resolve/main/best.pt")
-classification_model.to('mps')  # optional use the device that you have
+classification_model.to('cuda')  # optional use the device that you have
 
 # other devices are cpu (default) and cuda
 

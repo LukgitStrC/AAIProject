@@ -12,7 +12,7 @@ from functions.p1_satImg import *
 from functions.p2_center_coords import *
 from functions.p3_svp import *
 from functions.p4_streetImages import *
-from functions.p5_detect_streetSigns import *
+from functions.p5_streetSigns import *
 
 from functions.drawings import create_marked_svp
 
@@ -125,7 +125,7 @@ SEARCH_URL = f"{BASE_URL}/api/search"
 summary['panoramax_instance'] = BASE_URL
 
 RADIUS = 3.0    # Search Radius around coordinates
-summary['svp_search_radius'] = 3.0
+summary['svp_search_radius'] = 5.0
 
 found_svp = get_images_at(cp_lat, cp_lon, RADIUS, SEARCH_URL)
 

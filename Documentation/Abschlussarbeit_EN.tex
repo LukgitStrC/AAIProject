@@ -1,0 +1,72 @@
+\documentclass[
+   12pt, % Schriftgröße
+   DIV=calc,
+   ngerman, % für Umlaute, Silbentrennung etc.
+   a4paper, % Papierformat
+   oneside, % einseitiges Dokument
+   titlepage, % es wird eine Titelseite verwendet
+   parskip=half, % Abstand zwischen Absätzen (halbe Zeile)
+%   headings=normal, % Grˆﬂe der Überschriften verkleinern
+   listof=totoc, % Verzeichnisse im Inhaltsverzeichnis aufführen
+   bibliography=totoc, % Literaturverzeichnis im Inhaltsverzeichnis aufführen
+   index=totoc, % Index im Inhaltsverzeichnis aufführen
+%   captions=nooneline, % Beschriftung von Tabellen unterhalb ausgeben
+   final, % Status des Dokuments (final/draft)
+   numbers=noenddot
+]{scrartcl}
+
+%Abstände ändern
+%\renewcommand*{\chapterheadstartvskip}{\vspace{-1\baselineskip}} %Abstand vor Section
+\setlength{\headsep}{30pt} %Abstand Kopfzeile Textkörper
+
+\usepackage{graphicx}
+
+\input{Metadaten/Meta.tex} %Informationen über das Dokument
+
+\input{Metadaten/Packages.tex} %benötigte Packages
+ 
+\makeindex
+
+\input{Metadaten/page_style.tex} %Kopf- und Fußzeilen, Seitenränder..
+
+%Hier beginnt das eigentliche Dokument
+\begin{document}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\include{Metadaten/cover_sheet} %Deckblatt
+
+%\include{Inhalt/Abstract} %Falls ein Abstract eingefügt werden soll
+
+\pagenumbering{gobble}
+ 
+\pagenumbering{Roman}
+
+\tableofcontents %Inhaltsverzeichnis
+
+\include{Metadaten/acronyms} %Abkürzungsverzeichnis
+
+\newpage
+\listoffigures % Abbildungsverzeichnis
+\newpage
+\listoftables % Tabellenverzeichnis
+ 
+\clearpage
+
+% 1.5-fachen Zeilenabstand
+\onehalfspacing
+
+% Text includes
+
+\pagenumbering{arabic}
+\include{Metadaten/content}
+
+% Literaturverzeichnis 
+\bibliography{Bibliographie} % Aufruf: bibtex Bibliographie.bib
+\bibliographystyle{natdin} % DIN-Stil des Literaturverzeichnisses
+
+
+% Ende des Dokuments
+\end{document}
+%------------------------------------------
