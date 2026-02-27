@@ -87,9 +87,6 @@ def annotate_panoramas(image_folder, output_json="ground_truth.json"):
     print(f"✅ Annotation complete! Saved to {output_json}")
     return dataset
 
-# ==========================================
-# Example Usage
-# ==========================================
 if __name__ == "__main__":
-    # Point this to a folder full of test panoramas
+    # Point this to a folder full of test panoramas to annote them
     annotate_panoramas("./streetview_panoramas")

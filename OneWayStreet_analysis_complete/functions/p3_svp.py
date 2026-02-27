@@ -158,3 +158,30 @@ def download_images_from_features(features, OUT_DIR):
         # output_path saved to features
         feature['path'] = output_path
     return features
+
+def download_image_from_feature(feature, out_path):
+    """
+    Loads one image from image_url property and saves it in the out_dir
+    path is now saved in feature.path
+    """
+    assets = feature.get('assets', {})
+    if 'hd' in assets:
+        image_url = assets['hd']['href']
+        print("Found HD image URL.")
+    elif 'sd' in assets:
+        image_url = assets['sd']['href']
+        print("HD not available, found SD image URL.")
+    else:
+        raise ValueError("No suitable image asset ('hd' or 'sd') found in the response.")
+
+    print(f"Image URL extracted: {image_url}")
+    print("Downloading image...")
+    image_response = requests.get(image_url)
+    image_response.raise_for_status()
+
+    with open(out_path, 'wb') as file:
+        file.write(image_response.content)
+    print(f"Success! Image saved to: {out_path}")
+    # output_path saved to features
+    feature['path'] = out_path
+    return feature

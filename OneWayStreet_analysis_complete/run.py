@@ -6,7 +6,7 @@ import numpy as np
 import math
 import os
 import shutil
-
+import json
 
 from functions.p1_satImg import *
 from functions.p2_center_coords import *
@@ -14,6 +14,7 @@ from functions.p3_svp import *
 from functions.p4_streetImages import *
 from functions.p5_detect_streetSigns import *
 
+from functions.drawings import create_marked_svp
 
 
 # Pipeline:
@@ -28,13 +29,17 @@ from functions.p5_detect_streetSigns import *
 lat_sat, lon_sat = 49.18278, -0.35821
 identifier = "test1" 
 
+# OUTPUT
+summary = {}
+summary['coords'] = (lat_sat,lon_sat)
+
 # Folder structure
 res_dir = 'results'
 model_dir = 'models'
 
 abs_script_dir = os.path.dirname(os.path.abspath(__file__))
 
-if res_dir:
+if os.path.exists(res_dir):
     shutil.rmtree(res_dir)
 os.makedirs(res_dir, exist_ok=True)
 
@@ -42,12 +47,15 @@ sat_img_dir = os.path.join(res_dir,'sat')
 intersection_dir = os.path.join(res_dir,'intersection')
 svp_images_dir = os.path.join(res_dir,'svp')
 crops_dir = os.path.join(res_dir,'crops')
+summary_dir = os.path.join(res_dir,'summary')
 
 os.makedirs(sat_img_dir, exist_ok=True)
 os.makedirs(intersection_dir, exist_ok=True)
 os.makedirs(svp_images_dir, exist_ok=True)
 os.makedirs(crops_dir, exist_ok=True)
+os.makedirs(summary_dir, exist_ok=True)
 
+# distzinct suffixes for files which otherway would have the same identifier
 SAT_IMG_SUFFIX = '_SAT'
 INTERS_SUFFIX = '_INTERS'
 SVP_SUFFIX = '_SVP'
@@ -59,6 +67,7 @@ intersection_img_path = os.path.join(intersection_dir,'predict',f'{identifier}{S
 intersection_label_path = os.path.join(intersection_dir,'predict','labels',f'{identifier}{SAT_IMG_SUFFIX}.txt')
 svp_img_path = os.path.join(svp_images_dir,f'{identifier}{SVP_SUFFIX}.png')
 # number of crops is dynamic, so their paths are also dynamic
+summary_path = os.path.join(summary_dir,f'{identifier}.json')
 
 seg_model_path = os.path.join(model_dir,'segmentation','best.pt') 
 
@@ -104,6 +113,7 @@ cp_lat, cp_lon = yolo_to_geo(cx, cy, 1280, 1280, lat_sat, lon_sat, mpp)
 
 print("Center Point lat:", cp_lat, "Center Point lon:", cp_lon)
 print(f"{identifier}: [{lat_sat},{lon_sat}],[{cp_lat},{cp_lon}]")
+summary['center'] = (cp_lat,cp_lon)
 # ------------------------------------
 #      3 Download adjacent SVP
 # ------------------------------------
@@ -112,7 +122,10 @@ print(f"{identifier}: [{lat_sat},{lon_sat}],[{cp_lat},{cp_lon}]")
 BASE_URL = "https://api.panoramax.xyz"
 SEARCH_URL = f"{BASE_URL}/api/search"
 
+summary['panoramax_instance'] = BASE_URL
+
 RADIUS = 3.0    # Search Radius around coordinates
+summary['svp_search_radius'] = 3.0
 
 found_svp = get_images_at(cp_lat, cp_lon, RADIUS, SEARCH_URL)
 
@@ -123,16 +136,17 @@ for x in found_svp:
 min_dist_idx = svp_dist.index(min(svp_dist))
 svp = found_svp[min_dist_idx]
 svp_id = svp.get('id')
-found_svp_path = download_images_from_features([svp], svp_images_dir)[0]['path']
+found_svp = download_image_from_feature(svp, svp_img_path)
 
 if not os.path.exists(svp_img_path):
     print("No Street View Panorama downloaded!")
 
+summary['panoramax_picture'] = found_svp # contains all information about the panoramax image found and used
 
 # ------------------------------------------
 #      4 Get relevant image crops
 # ------------------------------------------
-img = cv2.imread(found_svp_path)
+img = cv2.imread(found_svp['path'])
 depth_model = DepthEstimationModel()
 # use ML model to estimate depth of image as heuristic for streetviews in cities
 depth_map = depth_model.predict(img)
@@ -151,7 +165,16 @@ for crop, yaw in zip(image_crops, angles):
 # ------------------------------------
 #        5 classify street
 # ------------------------------------
-
+roads = []
 for crop_path, yaw in zip(crop_paths,angles):
     crop_label = classify_street(crop_path)
     print(f'The street at angle {yaw} is a {crop_label.value}')
+    roads.append({'yaw':yaw, 'label':crop_label.value})
+
+marked_svp_path = os.path.join(svp_images_dir,f'{identifier}{SVP_SUFFIX}_marked.png')
+create_marked_svp(svp_img_path,marked_svp_path,roads)
+
+summary['roads'] = roads
+# save summary to file system
+with open(summary_path,'w') as f:
+    json.dump(summary,f, indent=4)
