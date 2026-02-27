@@ -1,0 +1,309 @@
+{
+    "coords": [
+        49.18278,
+        -0.35821
+    ],
+    "center": [
+        49.18287743816485,
+        -0.35827581499642314
+    ],
+    "panoramax_instance": "https://api.panoramax.xyz",
+    "svp_search_radius": 3.0,
+    "panoramax_picture": {
+        "id": "99a63e61-7c55-4963-a047-198ec57d07cb",
+        "bbox": [
+            -0.3582657,
+            49.1828642,
+            -0.3582657,
+            49.1828642
+        ],
+        "type": "Feature",
+        "links": [
+            {
+                "rel": "root",
+                "href": "https://api.panoramax.xyz/api/",
+                "type": "application/json",
+                "title": "Instance catalog"
+            },
+            {
+                "rel": "parent",
+                "href": "https://api.panoramax.xyz/api/collections/0d3f9232-f157-46da-bd27-5b1e4704da5f",
+                "type": "application/json"
+            },
+            {
+                "rel": "self",
+                "href": "https://api.panoramax.xyz/api/collections/0d3f9232-f157-46da-bd27-5b1e4704da5f/items/99a63e61-7c55-4963-a047-198ec57d07cb",
+                "type": "application/geo+json"
+            },
+            {
+                "rel": "collection",
+                "href": "https://api.panoramax.xyz/api/collections/0d3f9232-f157-46da-bd27-5b1e4704da5f",
+                "type": "application/json"
+            },
+            {
+                "rel": "license",
+                "href": "https://creativecommons.org/licenses/by-sa/4.0/",
+                "title": "License for this object (CC-BY-SA-4.0)"
+            },
+            {
+                "id": "af540135-ff78-4e83-862f-7008e0a9a151",
+                "rel": "next",
+                "href": "https://api.panoramax.xyz/api/collections/0d3f9232-f157-46da-bd27-5b1e4704da5f/items/af540135-ff78-4e83-862f-7008e0a9a151",
+                "type": "application/geo+json",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        -0.3583347,
+                        49.1829247
+                    ]
+                }
+            },
+            {
+                "id": "414f09f6-6d96-420e-adce-31b8a032b9b3",
+                "rel": "prev",
+                "href": "https://api.panoramax.xyz/api/collections/0d3f9232-f157-46da-bd27-5b1e4704da5f/items/414f09f6-6d96-420e-adce-31b8a032b9b3",
+                "type": "application/geo+json",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        -0.3582001,
+                        49.1828062
+                    ]
+                }
+            },
+            {
+                "rel": "via",
+                "href": "https://panoramax.openstreetmap.fr",
+                "type": "application/json",
+                "title": "Link to the original instance",
+                "instance_name": "osm-fr"
+            }
+        ],
+        "assets": {
+            "hd": {
+                "href": "https://panoramax.openstreetmap.fr/images/99/a6/3e/61/7c55-4963-a047-198ec57d07cb.jpg",
+                "type": "image/jpeg",
+                "roles": [
+                    "data"
+                ],
+                "title": "HD picture",
+                "description": "Highest resolution available of this picture"
+            },
+            "sd": {
+                "href": "https://panoramax.openstreetmap.fr/derivates/99/a6/3e/61/7c55-4963-a047-198ec57d07cb/sd.jpg",
+                "type": "image/jpeg",
+                "roles": [
+                    "visual"
+                ],
+                "title": "SD picture",
+                "description": "Picture in standard definition (fixed width of 2048px)"
+            },
+            "thumb": {
+                "href": "https://panoramax.openstreetmap.fr/derivates/99/a6/3e/61/7c55-4963-a047-198ec57d07cb/thumb.jpg",
+                "type": "image/jpeg",
+                "roles": [
+                    "thumbnail"
+                ],
+                "title": "Thumbnail",
+                "description": "Picture in low definition (fixed width of 500px)"
+            }
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -0.3582657,
+                49.1828642
+            ]
+        },
+        "providers": [
+            {
+                "id": "dc59a295-0d7b-4e93-80c4-d6826194b9ee",
+                "name": "AlbaireN",
+                "roles": [
+                    "producer"
+                ]
+            }
+        ],
+        "collection": "0d3f9232-f157-46da-bd27-5b1e4704da5f",
+        "properties": {
+            "exif": {
+                "Exif.Image.Make": "GoPro",
+                "Exif.Image.Model": "GoPro Max",
+                "Exif.Photo.Flash": "32",
+                "Exif.Image.GPSTag": "602",
+                "Exif.Image.ExifTag": "158",
+                "Exif.Photo.FNumber": "28/10",
+                "Exif.Image.DateTime": "2025:02:15 14:36:22",
+                "Exif.Image.Software": "H19.03.02.02.00",
+                "Exif.Photo.Contrast": "0",
+                "Exif.Photo.SceneType": "1",
+                "Exif.Photo.Sharpness": "2",
+                "Exif.Photo.ColorSpace": "0",
+                "Exif.Photo.FileSource": "3",
+                "Exif.Photo.Saturation": "0",
+                "Exif.Image.Orientation": "1",
+                "Exif.Image.XResolution": "72/1",
+                "Exif.Image.YResolution": "72/1",
+                "Exif.Photo.ExifVersion": "48 50 50 49",
+                "Exif.Photo.FocalLength": "3/1",
+                "Exif.Photo.GainControl": "0",
+                "Exif.Photo.LightSource": "0",
+                "Exif.Photo.MeteringMode": "1",
+                "Exif.Photo.WhiteBalance": "0",
+                "Xmp.GPano.LastPhotoDate": "2025:02:15 14:36:22",
+                "Exif.GPSInfo.GPSAltitude": "63220/1000",
+                "Exif.GPSInfo.GPSLatitude": "49/1 10/1 583111199/10000000",
+                "Exif.Photo.ApertureValue": "297/100",
+                "Exif.Photo.SensingMethod": "2",
+                "Xmp.GPano.FirstPhotoDate": "2025:02:15 14:36:22",
+                "Xmp.GPano.ProjectionType": "equirectangular",
+                "Exif.GPSInfo.GPSDateStamp": "2025:02:15",
+                "Exif.GPSInfo.GPSLongitude": "0/1 21/1 297565200/10000000",
+                "Exif.GPSInfo.GPSTimeStamp": "13/1 35/1 56/1",
+                "Exif.Image.ResolutionUnit": "2",
+                "Exif.Photo.CustomRendered": "0",
+                "Xmp.GPano.CaptureSoftware": "GoPro Max",
+                "Xmp.GPano.PoseRollDegrees": "0.0",
+                "Exif.Photo.FlashpixVersion": "8 9 10 11",
+                "Exif.Photo.PixelXDimension": "5760",
+                "Exif.Photo.PixelYDimension": "2880",
+                "Exif.Photo.SubjectDistance": "0/1",
+                "Exif.Thumbnail.Compression": "6",
+                "Exif.Thumbnail.XResolution": "72/1",
+                "Exif.Thumbnail.YResolution": "72/1",
+                "Xmp.GPano.ExposureLockUsed": "False",
+                "Xmp.GPano.PosePitchDegrees": "0.0",
+                "Exif.GPSInfo.GPSAltitudeRef": "0",
+                "Exif.GPSInfo.GPSLatitudeRef": "N",
+                "Exif.Image.ImageDescription": "DCIM\\159GOPRO\\GSMP5870.JPG",
+                "Exif.Image.YCbCrPositioning": "1",
+                "Exif.Photo.BodySerialNumber": "C3351325062741",
+                "Exif.Photo.DateTimeOriginal": "2025:02:15 14:36:22",
+                "Exif.Photo.DigitalZoomRatio": "1024/1024",
+                "Exif.Photo.MaxApertureValue": "297/100",
+                "Exif.Photo.SceneCaptureType": "1",
+                "Xmp.GPano.SourcePhotosCount": "2",
+                "Xmp.GPano.StitchingSoftware": "GoPro Max",
+                "Xmp.GPano.UsePanoramaViewer": "True",
+                "Exif.GPSInfo.GPSLongitudeRef": "W",
+                "Exif.Photo.DateTimeDigitized": "2025:02:15 14:36:22",
+                "Xmp.GPano.InitialCameraDolly": "0.0",
+                "Xmp.GPano.PoseHeadingDegrees": "0.0",
+                "Exif.Thumbnail.ResolutionUnit": "2",
+                "Xmp.GPano.FullPanoWidthPixels": "5760",
+                "Exif.Iop.InteroperabilityIndex": "R98",
+                "Exif.Photo.InteroperabilityTag": "572",
+                "Xmp.GPano.CroppedAreaTopPixels": "0",
+                "Xmp.GPano.FullPanoHeightPixels": "2880",
+                "Exif.Photo.SubjectDistanceRange": "0",
+                "Xmp.GPano.CroppedAreaLeftPixels": "0",
+                "Exif.Iop.InteroperabilityVersion": "48 49 48 48",
+                "Exif.Photo.FocalLengthIn35mmFilm": "15",
+                "Xmp.GPano.InitialViewRollDegrees": "0.0",
+                "Exif.Photo.CompressedBitsPerPixel": "100/297",
+                "Xmp.GPano.InitialViewPitchDegrees": "0.0",
+                "Exif.Photo.ComponentsConfiguration": "1 2 3 0",
+                "Exif.Photo.DeviceSettingDescription": "0 0 0 0",
+                "Xmp.GPano.InitialVerticalFOVDegrees": "0.0",
+                "Xmp.GPano.InitialViewHeadingDegrees": "0.0",
+                "Exif.Thumbnail.JPEGInterchangeFormat": "44020",
+                "Xmp.GPano.CroppedAreaImageWidthPixels": "5760",
+                "Xmp.GPano.InitialHorizontalFOVDegrees": "0.0",
+                "Xmp.GPano.CroppedAreaImageHeightPixels": "2880",
+                "Exif.Thumbnail.JPEGInterchangeFormatLength": "16549"
+            },
+            "created": "2025-02-16T21:11:57.242473+00:00",
+            "license": "CC-BY-SA-4.0",
+            "updated": "2025-06-03T03:02:44.485815+00:00",
+            "datetime": "2025-02-15T13:35:56+00:00",
+            "pers:roll": 0.0,
+            "semantics": [],
+            "collection": {
+                "semantics": []
+            },
+            "datetimetz": "2025-02-15T14:35:56+01:00",
+            "pers:pitch": 0.0,
+            "annotations": [],
+            "view:azimuth": 311,
+            "geovisio:image": "https://panoramax.openstreetmap.fr/images/99/a6/3e/61/7c55-4963-a047-198ec57d07cb.jpg",
+            "geovisio:status": "ready",
+            "geovisio:producer": "AlbaireN",
+            "geovisio:thumbnail": "https://panoramax.openstreetmap.fr/derivates/99/a6/3e/61/7c55-4963-a047-198ec57d07cb/thumb.jpg",
+            "original_file:name": "GSMP5870.JPG",
+            "original_file:size": 3292144,
+            "geovisio:visibility": "anyone",
+            "tiles:tile_matrix_sets": {
+                "geovisio": {
+                    "type": "TileMatrixSetType",
+                    "title": "GeoVisio tile matrix for picture 99a63e61-7c55-4963-a047-198ec57d07cb",
+                    "identifier": "geovisio-99a63e61-7c55-4963-a047-198ec57d07cb",
+                    "tileMatrix": [
+                        {
+                            "type": "TileMatrixType",
+                            "tileWidth": 720.0,
+                            "identifier": "0",
+                            "tileHeight": 720.0,
+                            "matrixWidth": 8,
+                            "matrixHeight": 4,
+                            "topLeftCorner": [
+                                0,
+                                0
+                            ],
+                            "scaleDenominator": 1
+                        }
+                    ]
+                }
+            },
+            "pers:interior_orientation": {
+                "camera_model": "Max",
+                "focal_length": 3.0,
+                "field_of_view": 360,
+                "camera_manufacturer": "GoPro",
+                "sensor_array_dimensions": [
+                    5760,
+                    2880
+                ]
+            },
+            "geovisio:rank_in_collection": 187,
+            "quality:horizontal_accuracy": 4.0,
+            "panoramax:horizontal_pixel_density": 16
+        },
+        "stac_version": "1.0.0",
+        "asset_templates": {
+            "tiles": {
+                "href": "https://panoramax.openstreetmap.fr/derivates/99/a6/3e/61/7c55-4963-a047-198ec57d07cb/tiles/{TileCol}_{TileRow}.jpg",
+                "type": "image/jpeg",
+                "roles": [
+                    "data"
+                ],
+                "title": "HD tiled picture",
+                "description": "Highest resolution available of this picture, as tiles"
+            }
+        },
+        "stac_extensions": [
+            "https://stac-extensions.github.io/view/v1.0.0/schema.json",
+            "https://stac-extensions.github.io/perspective-imagery/v1.0.0/schema.json",
+            "https://stac-extensions.github.io/tiled-assets/v1.0.0/schema.json"
+        ],
+        "distance_from_location": 1.6472378725310823,
+        "path": "results/svp/test1_SVP.png"
+    },
+    "roads": [
+        {
+            "yaw": -82.375,
+            "label": "ONE_WAY_EXIT"
+        },
+        {
+            "yaw": -3.625,
+            "label": "ONE_WAY_EXIT"
+        },
+        {
+            "yaw": 89.4375,
+            "label": "ONE_WAY_EXIT"
+        },
+        {
+            "yaw": 173.875,
+            "label": "TWO_WAY_STREET"
+        }
+    ]
+}
