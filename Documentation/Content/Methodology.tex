@@ -170,12 +170,10 @@ it will detect them as streets.
 The second approach still worked better so we implemented it.
 
 For the street sign detection we could use the YOLO models provided by panoramax.
-The \texttt{Panoramax/detect\_face\_plate\_sign}-model has a provided accuracy
-for road signs of 0.879 which is still very high and the
-\texttt{Panoramax/classify\_fr\_road\_signs}-model for classification has an
-accuracy of 0.987.
-The first model returns the bounding boxes of detected road signs and the
-classification model just has to analyze the crops. After both steps the scheme
+The \texttt{Panoramax/detect\_face\_plate\_sign}-model
+returns the bounding boxes of detected road signs and the
+\texttt{Panoramax/classify\_fr\_road\_signs}-model
+just has to analyze the crops. After both steps the scheme
 presented in the decision tree in figure \ref{fig:decision_tree} is used to
 label the street.
 
