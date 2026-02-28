@@ -68,6 +68,8 @@ utilised for subsequent tasks. Another model called \textit{Depth Anything V2}
 is used for identifying relevant sections of the panorama image from Panoramax.
 This application is used to obtain a monocular depth estimation by producing a
 depth map of a given image \cite{5depthAnything}.
+We also used two pretrained \textit{YOLO}-models from panoramax on huggingface
+to detect and classify road signs \cite{8PanoramaxHuggingface}.
 
 Other technologies are used in this project for creating custom datasets.
 The open-source platform \textit{Label Studio} is used to annotate data for
@@ -77,7 +79,7 @@ a dataset containing 99 images with labelled intersection areas, which is used
 to fine-tune the applied YOLO11 model. To obtain the needed satellite images of
 intersections, we used a dataset from the French government office DINUM that
 included a detailed list of all intersections in France and their location,
-ordered by the respective départements (French administrative districts)
+ordered by the respective d\'{e}partements (French administrative districts)
 \cite{7DINUM}.
 To combine all the tasks as a coherent implementation of the workflow, we use
 the programming language python.

@@ -30,10 +30,13 @@ A.~Campbell, A.~Both, and Q.~C. Sun, ``Detecting and mapping traffic signs from 
 \bibitem{5depthAnything}
 L.~Yang, B.~Kang, Z.~Huang, Z.~Zhao, X.~Xu, J.~Feng, and H.~Zhao, ``Depth anything v2,'' 2024.
 
+\bibitem{8PanoramaxHuggingface}
+P.~O.~S. Community, ``Panoramax,'' 2025.
+
 \bibitem{6labelstudio}
 {HumanSignal Inc.}, ``Label studio documentation — overview of label studio,'' nodate.
 
 \bibitem{7DINUM}
-{Direction Interministe\'{e}rielle du Num\'{e}rique (DINUM)}, ``Jeu de données - intersections des rues et routes de france | data.gouv.fr,'' 2025.
+{Direction Interministe\'{e}rielle du Num\'{e}rique (DINUM)}, ``Jeu de donn\'{e}es - intersections des rues et routes de france | data.gouv.fr,'' 2025.
 
 \end{thebibliography}

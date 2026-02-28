@@ -1,32 +1,103 @@
 % !TEX root = ../Grunddatei.tex
 \section{Results and Discussion}
 
-...
+To execute our tool you just need to go into the
+\texttt{OneWayStreet\_analysis\_complete}-folder and execute \texttt{run.py}.
+Before that you should give the tool writing access to this folder so it can
+create the results and save them. You also probably need to create your own
+\textit{API Key} at  for the access to \textit{MapTiler} and insert it as \texttt{api\_key}.
+You can set the coordinates as \texttt{lat\_sat, lon\_sat} at the top of the script
+as well as choose your own identifier for the results. Another parameter
+important for testing is the radius. This variable tells our program how far to
+search for streetview panoramas.
+We recommend to choose your test coordinates with care in
+\texttt{https://panoramax.openstreetmap.fr/} and set as a filter 360° images only.
+It is generally best to actually pick coordinates where there is only one
+intersection visible.
 
-The approach to extract the relevant streets does not works very well because
-the accuracy is very low as you can see in the foloowing little benchmark results:
-\begin{verbatim}
-==============================
- BENCHMARK RESULTS
-==============================
-Total True Positives:  27
-Total False Positives: 16
-Total False Negatives: 24
-------------------------------
-Precision: 62.79%
-Recall:    52.94%
-F1-Score:  57.45%
-Mean Angular Error: 4.26°
-==============================
-\end{verbatim}
+After starting the program it will first download the image with the exact
+coordinates given as center and with given zoom and tile radius from
+\textit{MapTiler}.
+Then it uses the \textit{YOLO11} model to get the center point of the
+intersection in the image and return its coordinates as lattitude and longitude.
 
-in this benchmark every street entrance that was marked as a human is a single
-test and the benchmark then uses our function s to predict the angles of streets
-in a panorama.
-If the deviation from the center of the street is less than 15°, then the test
-was a success, else a miss. Because this measure is very much dependant on the
-choice of tolerance.
+These values can then be used to download the nearest streetview panorama from
+the given panoramax instance. Currently there is no \textit{API Key} needed to
+download images from the instance in the code, so we recommend just using it.
+If this instance should however not be responsive there are some other instances,
+whose urls can be used instead.
 
-...
+After this our chosen street detection function is used to crop the streetview
+panorama for separate streets.
+
+Then again for every crop the \texttt{classify\_street}-function is used to
+classify the street as explained in methodology.
+
+As in between results the satallite image, the segmented satellite image,
+the streetview panroama and the crops of the streetview panorama are written
+to the file system.
+
+As a final result the \texttt{summary.json} is saved, which contains some metainformation
+about the panoramax image, the coordinates from the start, the intersection center point
+and finally the angles of the roads detected inside streetview panorama with
+their respective label. This result is machine readable and could be resused by
+other functions.
+
+The following section is about the results of each subtask and how well they
+perform as parts of the proposed workflow.
+The first step is getting a satellite image at given coordinates.
+This step works flawlessly and can be done easily, since it only requires to
+define latitude and longitude. During our work in this project, we also had no
+problems with the MapTiler API, as we could stay below the free limit.
+It must be mentioned, that the quality of satellite images, while very good for
+the area around Caen, can vary depending on the given coordinates.
+This is, for example, because available data originates from different
+satellites, that could have worse quality.
+The results of the second step, the intersection segmentation, are also quite good.
+When looking at the model training, both precision and recall are equal to around 0.8.
+This means, that the current model is good at finding an intersection in a given
+satellite image as well as segmenting its area.
+Another metric for model quality is the mean average precision, which equals to
+around 0.5.
+This means, that the model is slightly worse at creating a very detailed
+segmentation of the intersection. In practice this means, that the resulting
+segmentation might not reflect the actual area of the intersection accurately
+and instead, creates segmentation areas that are fuzzy or include small parts of
+adjacent areas. Fortunately, the effects on our proposed workflow are minimal,
+since we don’t need or use a very detailed segmentation of a given intersection
+and only use it to estimate the center point.
+Third, this estimation of the intersection center point as well as the following
+download of an adjacent street view panorama from Panoramax also works faultless.
+However, it must be mentioned that the download can still fail, depending on the
+chosen search radius and the density of street view panoramas.
+When looking at different areas, it could be needed to change this search radius
+parameter.
+During our test for Caen, the current value did not disrupt the current implementation.
+The next step of our workflow is the identification of relevant sections of a
+given street view panorama.
+The results show, that the proposed approach works in principle, but still needs
+fine tuning.
+During our tests, we only achieved a precision of 65.79 percent and a recall of
+around 53 percent.
+The F1-Score of our solution equals to 57.45 percent.
+A reason for the current flaws is that the used street view panoramas can vary
+immensely.Different shortcomings are, for example, a disparate recording angles
+as well as the complexity of a given intersection scene, that can include
+different buildings, structures, participants or other objects.
+The current implementation does not account for all of those influences, which
+is why irrelevant sections of the panorama might be identified incorrectly,
+which impacts the continued workflow and the end results.
+The fourth step is the detection of street signs in images that represent the
+relevant sections of the street view panorama. Our test show, that the current
+implementation produces accurate results and can be used as intended in our
+proposed workflow. Here, the developers of the used models published own metrics
+of their respective models on Hugging-Face.
+The \texttt{Panoramax/detect\_face\_plate\_sign}-model has a provided accuracy for
+road signs of 0.879 which is still very high and the
+\texttt{Panoramax/classify\_fr\_road\_signs}-model for classification has an
+accuracy of 0.987. These results match our own tests during this project.
+The last step of creating a results JSON file as well as all additional
+(auxiliary) functions work flawlessly and produce the necessary data needed for
+the following subtasks of the proposed workflow.
 
 
