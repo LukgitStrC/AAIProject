@@ -1,0 +1,13 @@
+\contentsline {section}{\nonumberline List of Abbreviations}{II}{}%
+\contentsline {section}{\nonumberline List of Figures}{III}{}%
+\contentsline {section}{\nonumberline List of Tables}{IV}{}%
+\contentsline {section}{\numberline {1}Introduction}{1}{}%
+\contentsline {section}{\numberline {2}Related works}{2}{}%
+\contentsline {section}{\numberline {3}Methodology}{4}{}%
+\contentsline {subsection}{\numberline {3.1}Goals and tasks}{4}{}%
+\contentsline {subsection}{\numberline {3.2}Used technologies}{4}{}%
+\contentsline {subsection}{\numberline {3.3}Proposed workflow}{6}{}%
+\contentsline {section}{\numberline {4}Results and Discussion}{9}{}%
+\contentsline {section}{\numberline {5}Conclusion}{10}{}%
+\contentsline {section}{\nonumberline References}{11}{}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

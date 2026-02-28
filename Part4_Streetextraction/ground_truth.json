@@ -1,0 +1,128 @@
+[
+    {
+        "image_path": "./streetview_panoramas/9e56e68c-937e-4d55-8e4b-db6e84e3beb0.jpg",
+        "true_yaws": [
+            -80.55,
+            46.80000000000001,
+            101.92500000000001
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/test10.jpg",
+        "true_yaws": [
+            -123.3,
+            -47.92500000000001,
+            136.8
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/test6.jpg",
+        "true_yaws": [
+            -145.35,
+            -71.775,
+            26.099999999999994,
+            110.69999999999999
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/6f34a62d-c8be-429d-b266-b1aca354ae1d.jpg",
+        "true_yaws": [
+            -174.825,
+            -59.175,
+            -4.5,
+            177.3
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/test7.jpg",
+        "true_yaws": [
+            -139.05,
+            -30.375,
+            39.599999999999994
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/test5.jpg",
+        "true_yaws": [
+            -104.4,
+            62.77499999999998,
+            175.72500000000002
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/test4.jpg",
+        "true_yaws": [
+            -94.95,
+            23.399999999999977,
+            169.64999999999998
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/cc6b8656-d52e-42d1-ab10-542588c9f9f0.jpg",
+        "true_yaws": [
+            -90.9,
+            -3.5999999999999943,
+            94.27499999999998,
+            177.75
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/test1.jpg",
+        "true_yaws": [
+            -95.625,
+            4.950000000000017,
+            119.92500000000001
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/test3.jpg",
+        "true_yaws": [
+            -173.7,
+            -50.400000000000006,
+            4.049999999999983
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/test2.jpg",
+        "true_yaws": [
+            -126.9,
+            -51.974999999999994,
+            32.85000000000002,
+            164.02499999999998
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/test9.jpg",
+        "true_yaws": [
+            -132.075,
+            9.0,
+            81.0
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/test8.jpg",
+        "true_yaws": [
+            -57.825,
+            140.625
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/d8306a36-c7f6-41a7-ac98-834d422fdd23.jpg",
+        "true_yaws": [
+            -112.725,
+            -11.25,
+            92.25,
+            177.75
+        ]
+    },
+    {
+        "image_path": "./streetview_panoramas/61efb4ce-cdf2-4160-aaf6-f5bca9c7e247.jpg",
+        "true_yaws": [
+            -110.25,
+            -56.025000000000006,
+            -8.099999999999994,
+            87.52500000000003,
+            175.95
+        ]
+    }
+]

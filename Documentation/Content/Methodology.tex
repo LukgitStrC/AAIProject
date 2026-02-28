@@ -7,7 +7,31 @@ In this project, our main goal is to examine the potential and the limits of str
 As described, the main objective of this project is to create an application to automatically detect one-way streets in satellite imagery, based on ground-level views of found intersections. For that, we want to use different deep learning methods to approach the individual tasks. These include three major steps that can be used to group the different subtasks. The first task is the detection of an intersection in a given satellite image. The main purpose for this is to segment the area occupied by the intersection. This can be used in the second task, which includes the extraction of a street view panorama at the found intersection. Third, this 360-degree image is analysed for relevant sections of the panorama. Last, the detection of street signs relevant for one-way streets concludes the application.
 
 \subsection{Used technologies}
-A number of different tools, models and data sources are used to implement the individual tasks of the application. To get satellite images, the open-source remote sensing platform MapTiler is utilised. This service provides online maps, including satellite imagery of varying resolution, maps for data visualisation or schematic maps for specific use cases. For the proposed workflow, the \textit{MapTiler API} is used to get map tiles that can be combined into satellite images with a resolution of around 20cm per pixel \cite{Maptiler1}. The company offers a free access plan for non-commercial use that includes 100.000 API calls per month \cite{Maptiler2}. To get open-source street view panoramas, we are using \textit{Panoramax}, an open-source project dedicated to collecting and providing street level imagery. The free alternative to Google Street View was first founded by the French National Geographic Institute and includes over 74 million images, mostly focusing on French national territory. The project includes different instances that mostly provide different data. Each of those instances have individual API endpoints that are primarily used to search for, filter or download images and other data \cite{3panoramax}. In this project, the service is utilised to automatically locate and download 360-degree images at intersections that are detected in satellite images. Due to the data being geographically confined, the proposed workflow is developed and tested in a limited area. For this, we chose the French city of Caen, because of the density of available data in this region. Figure~\ref{fig:panoramax} shows the density of 360-degree panoramas available at Panoramax in Caen, Figure~\ref{fig:svp} illustrates an example for a specific street view panorama.
+A number of different tools, models and data sources are used to implement the
+individual tasks of the application. To get satellite images, the open-source
+remote sensing platform MapTiler is utilised. This service provides online maps,
+including satellite imagery of varying resolution, maps for data visualisation
+or schematic maps for specific use cases.
+For the proposed workflow, the \textit{MapTiler API} is used to get map tiles
+that can be combined into satellite images with a resolution of around 20cm per
+pixel \cite{Maptiler1}. The company offers a free access plan for non-commercial
+use that includes 100.000 API calls per month \cite{Maptiler2}.
+To get open-source street view panoramas, we are using \textit{Panoramax}, an
+open-source project dedicated to collecting and providing street level imagery.
+The free alternative to Google Street View was first founded by the French
+National Geographic Institute and includes over 74 million images, mostly
+focusing on French national territory. The project includes different instances
+that mostly provide different data. Each of those instances have individual API
+endpoints that are primarily used to search for, filter or download images and
+other data \cite{3panoramax}.
+In this project, the service is utilised to automatically locate and download
+360-degree images at intersections that are detected in satellite images.
+Due to the data being geographically confined, the proposed workflow is
+developed and tested in a limited area. For this, we chose the French city of
+Caen, because of the density of available data in this region.
+Figure~\ref{fig:panoramax} shows the density of 360-degree panoramas available
+at Panoramax in Caen, Figure~\ref{fig:svp} illustrates an example for a specific
+street view panorama.
 
 \begin{figure}[htbp]
     \centering
@@ -28,14 +52,38 @@ A number of different tools, models and data sources are used to implement the i
     
 \end{figure}
 
-To analyse the collected images, the \textit{YOLO11} model by Ultralytics is used for the segmentation and detection task of the application. The model is characterised as an extension of classic convolutional neural networks that are often used for classic computer vision tasks, like object detection, classification or segmentation. The advancements of this technology are primarily because of changes in model architecture and lead to a very high computation and prediction speed while maintaining good accuracy \cite{4ultralytics}. Another factor for choosing YOLO11 for this project is the easy integration of the model into automated workflows as well as the results that get produced when running inference. Here, the produced data of segmentation and classification tasks include coordinates to identify relevant areas of a given image, which can be easily utilised for subsequent tasks. Another model called \textit{Depth Anything V2} is used for identifying relevant sections of the panorama image from Panoramax. This application is used to obtain a monocular depth estimation by producing a depth map of a given image \cite{5depthAnything}.
+To analyse the collected images, the \textit{YOLO11} model by Ultralytics is
+used for the segmentation and detection task of the application.
+The model is characterised as an extension of classic convolutional neural
+networks that are often used for classic computer vision tasks, like object
+detection, classification or segmentation. The advancements of this technology
+are primarily because of changes in model architecture and lead to a very high
+computation and prediction speed while maintaining good accuracy \cite{4ultralytics}.
+Another factor for choosing YOLO11 for this project is the easy integration of
+the model into automated workflows as well as the results that get produced when
+running inference.
+Here, the produced data of segmentation and classification tasks include
+coordinates to identify relevant areas of a given image, which can be easily
+utilised for subsequent tasks. Another model called \textit{Depth Anything V2}
+is used for identifying relevant sections of the panorama image from Panoramax.
+This application is used to obtain a monocular depth estimation by producing a
+depth map of a given image \cite{5depthAnything}.
 
-Other technologies are used in this project for creating custom datasets. The open-source platform \textit{Label Studio} is used to annotate data for machine learning processes \cite{6labelstudio}. To correctly segment intersections in the provided satellite images, we created a dataset containing 99 images with labelled intersection areas, which is used to fine-tune the applied YOLO11 model. To obtain the needed satellite images of intersections, we used a dataset from the French government office DINUM that included a detailed list of all intersections in France and their location, ordered by the respective départements (French administrative districts) \cite{7DINUM}. To combine all the tasks as a coherent implementation of the workflow, we use the programming language python.
+Other technologies are used in this project for creating custom datasets.
+The open-source platform \textit{Label Studio} is used to annotate data for
+machine learning processes \cite{6labelstudio}.
+To correctly segment intersections in the provided satellite images, we created
+a dataset containing 99 images with labelled intersection areas, which is used
+to fine-tune the applied YOLO11 model. To obtain the needed satellite images of
+intersections, we used a dataset from the French government office DINUM that
+included a detailed list of all intersections in France and their location,
+ordered by the respective départements (French administrative districts)
+\cite{7DINUM}.
+To combine all the tasks as a coherent implementation of the workflow, we use
+the programming language python.
 
 \subsection{Proposed workflow}
-
 The following flowchart (Figure~\ref{fig:flowchart}) presents all (sub-)tasks of the proposed application.
-
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\linewidth]{Pictures/flowchart.png}
@@ -52,6 +100,93 @@ The following section is dedicated to explaining specific subtasks of the applic
     \label{fig:satImg_results}
 \end{figure}
 
-SCHRITT FÜR DIE PEAK DETECTION
 
-The other tasks can be implemented using simpler routines. For example, basic API requests with the python package \textit{requests} can be used to get data from individual MapTiler or Panoramax endpoints. This includes receiving satellite images and street view panoramas, as well as obtaining the nearest panorama image, given a specific location. The models included in the proposed workflow mostly require executing their respective prediction functions/commands with corresponding parameters. Last, saving the results of the analysis in JSON-files can also be done easily by utilising the python package \textit{json}.
+
+The other tasks can be implemented using simpler routines.
+For example, basic API requests with the python package \textit{requests} can
+be used to get data from individual MapTiler or Panoramax endpoints.
+This includes receiving satellite images and street view panoramas, as well as
+obtaining the nearest panorama image, given a specific location.
+The models included in the proposed workflow mostly require executing their
+respective prediction functions/commands with corresponding parameters.
+Last, saving the results of the analysis in JSON-files can also be done easily
+by utilising the python package \textit{json}.
+
+To extract streets from streetview panoramas the first step is to think about
+what a street entrance looks like in a panorama.
+First  we make the assumptions, that
+\begin{enumerate}
+    \item the image was taken in horizontal position,
+    \item inside a town and
+    \item that the image was taken in the middle of the section or at least very
+    close to it.
+\end{enumerate}
+Then we can use the following approaches to identify the direction of streets.
+First we can deduce that the street entrances can be found in the proximity of
+half the height of the image. We then define that our crops should all have the
+size 600 times 600 px and that we want to include a field of view of 90°.
+From this we allready know how much from the bottom and the top we have to cut off.
+What we still have to find out is, the horizontal center of the street.
+So a single x coordinate.
+To solve this we transform the problem into a one dimensional problem in which
+we only need to find peaks.
+
+To transform the image into a 1D Array (or vector), we first used the following
+approach: We segmented the image using the
+\texttt{nvidia/segformer-b2-finetuned-cityscapes-1024-1024}-model and extracted
+the pixels with label \texttt{road} as marker.
+From this we can simply transform the problem by extracting the index of the
+highest marked pixels per column and insert it in an array.
+For this we use the assumption that streets will mostly look like rays away
+from the bottom of the image and disappear in distance.
+
+The second approach uses the \texttt{LiheYoung/depth-anything-small-hf}-model,
+also called Depth Anything V2 to create a depth map of the image.
+We then cut off the the bottom and the top and calulcate the mean depth of each
+column of the remaining section.
+Because the streets usually disappear in the distance we have a higher depth in
+places where a street is located. The mean depths are then inserted in an array.
+
+Because the image is a panorama we have to take into account,
+that we need to search for peaks on a circle.
+For this we add the array itself once at the start and at the end and later just
+search for peaks in the middle section. Before we proceed we also need to ensure
+a smooth curve. After these steps we can use peak detection to detect all peaks
+with a configured prominence and distance from each other and so receive the x
+coordinates fo the center points for the street entrance crops.
+
+Both approaches have their weaknesses. The first ones weakness is the model
+itself, which can not confidently point out streets with different lighting,
+textures and colors.
+Also sometimes there are obstacles in the streets like cars for example, which
+will prompt our approach to not detect the street as the street itself is not
+visible.
+
+The second approach instead works quite confidently inside cities but as soon
+as there are other distant areas visible in the middle section of the panorama
+it will detect them as streets.
+
+The second approach still worked better an so we implemented it.
+
+For the street sign detection we could use the YOLO models provided by panoramax.
+The \texttt{Panoramax/detect\_face\_plate\_sign}-model has a provided accuracy
+for road signs of 0.879 which is still very high and the
+\texttt{Panoramax/classify\_fr\_road\_signs}-model for classification has an
+accuracy of 0.987.
+The first model returns the bounding boxes of detected road signs and the
+classification model just has to analyze the crops. After both steps the scheme
+presented in the decision tree in figure \ref{fig:decision_tree} is used to
+label the street.
+
+The label is then inserted with the angle to the center of the of the street in
+a dictionary from which it can be further processed.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{Pictures/decision_tree.png}
+    \caption{Decision tree depicting how the program classifies streets – source: own depiction using draw.io}
+    \label{fig:decision_tree}
+\end{figure}
+
+
+
