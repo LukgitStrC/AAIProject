@@ -4,7 +4,7 @@
 \subsection{Goals and tasks}
 In this project, our main goal is to examine the potential and the limits of street analysis for freely available data sources. Those include open-source remote sensing data, specifically satellite images, as well as free ground-level imagery of streets and their surroundings. We aim to apply computer vision methods and technologies to detect street features, so that information about an area can be obtained and used for further analysis. The core of this project is to design and implement a workflow to connect satellite images, ground-level street view panoramas and deep learning systems in a combined automated application. For this, the project explores nuances of model capabilities in a combined setting, especially when given data (like satellite images or street view images) of varying quality.
 
-As described, the main objective of this project is to create an application to automatically detect one-way streets in satellite imagery, based on ground-level views of found intersections. For that, we want to use different deep learning methods to approach the individual tasks. These include three major steps that can be used to group the different subtasks. The first task is the detection of an intersection in a given satellite image. The main purpose for this is to segment the area occupied by the intersection. This can be used in the second task, which includes the extraction of a street view panorama at the found intersection. Third, this 360-degree image is analysed for relevant sections of the panorama. Last, the detection of street signs relevant for one-way streets concludes the application.
+As described, the main objective of this project is to create an application to automatically detect one-way streets in satellite imagery, based on ground-level views of found intersections. For that, we want to use different deep learning methods to approach the individual tasks. These include four major steps that can be used to group the different subtasks. The first task is the detection of an intersection in a given satellite image. The main purpose for this is to segment the area occupied by the intersection. This can be used in the second task, which includes the extraction of a street view panorama at the found intersection. Third, this 360-degree image is analysed for relevant sections of the panorama. Last, the detection of street signs relevant for one-way streets concludes the application.
 
 \subsection{Used technologies}
 A number of different tools, models and data sources are used to implement the
@@ -114,7 +114,7 @@ respective prediction functions/commands with corresponding parameters.
 Last, saving the results of the analysis in JSON-files can also be done easily
 by utilising the python package \textit{json}.
 
-To extract streets from streetview panoramas the first step is to think about
+To extract streets from streetview panoramas, the first step is to think about
 what a street entrance looks like in a panorama.
 First  we make the assumptions, that
 \begin{enumerate}
@@ -124,13 +124,12 @@ First  we make the assumptions, that
     close to it.
 \end{enumerate}
 Then we can use the following approaches to identify the direction of streets.
-First we can deduce that the street entrances can be found in the proximity of
+First, we can deduce that the street entrances can be found in the proximity of
 half the height of the image. We then define that our crops should all have the
 size 600 times 600 px and that we want to include a field of view of 90°.
 From this we allready know how much from the bottom and the top we have to cut off.
-What we still have to find out is, the horizontal center of the street.
-So a single x coordinate.
-To solve this we transform the problem into a one dimensional problem in which
+What we still have to find out is the horizontal center of the street, which is a single x coordinate.
+To solve this, we transform the problem into a one dimensional problem in which
 we only need to find peaks.
 
 To transform the image into a 1D Array (or vector), we first used the following
@@ -149,13 +148,13 @@ column of the remaining section.
 Because the streets usually disappear in the distance we have a higher depth in
 places where a street is located. The mean depths are then inserted in an array.
 
-Because the image is a panorama we have to take into account,
+Because the image is a panorama we have to take into account
 that we need to search for peaks on a circle.
 For this we add the array itself once at the start and at the end and later just
 search for peaks in the middle section. Before we proceed we also need to ensure
 a smooth curve. After these steps we can use peak detection to detect all peaks
 with a configured prominence and distance from each other and so receive the x
-coordinates fo the center points for the street entrance crops.
+coordinates for the center points for the street entrance crops.
 
 Both approaches have their weaknesses. The first ones weakness is the model
 itself, which can not confidently point out streets with different lighting,
@@ -167,20 +166,18 @@ visible.
 The second approach instead works quite confidently inside cities but as soon
 as there are other distant areas visible in the middle section of the panorama
 it will detect them as streets. 
-The second approach still worked better so we implemented it.
+The second approach still worked better used it in our current implementation.
 
 For the street sign detection we could use the YOLO models provided by panoramax.
-The \texttt{Panoramax/detect\_face\_plate\_sign}-model has a provided accuracy
-for road signs of 0.879 which is still very high and the
-\texttt{Panoramax/classify\_fr\_road\_signs}-model for classification has an
-accuracy of 0.987.
-The first model returns the bounding boxes of detected road signs and the
-classification model just has to analyze the crops. After both steps the scheme
+The \texttt{Panoramax/detect_face_plate_sign}-model
+returns the bounding boxes of detected road signs and the
+\texttt{Panoramax/classify_fr_road_signs}-model
+just has to analyze the crops. After both steps the scheme
 presented in the decision tree in figure \ref{fig:decision_tree} is used to
 label the street.
 
 The label is then inserted with the angle to the center of the of the street in
-a dictionary from which it can be further processed.
+a dictionary, from which it can be further processed.
 
 \begin{figure}[htbp]
     \centering
