@@ -1,21 +1,21 @@
 # Fdb version 4
-["bibtex Abschlussarbeit_EN"] 1772315207.06172 "Abschlussarbeit_EN.aux" "Abschlussarbeit_EN.bbl" "Abschlussarbeit_EN" 1772315208.61812 0
-  "./Bibliographie.bib" 1772314402.69923 8555 eeccf0fde980c95e4eb77d1cebd8da98 ""
+["bibtex Abschlussarbeit_EN"] 1772318008.98508 "Abschlussarbeit_EN.aux" "Abschlussarbeit_EN.bbl" "Abschlussarbeit_EN" 1772318316.27382 0
+  "./Bibliographie.bib" 1772318008.71626 4774 ff387c322ecebd52b24abb992442117e ""
   "/usr/local/texlive/2024/texmf-dist/bibtex/bst/base/ieeetr.bst" 1292289607 18361 1a00e58565e7f19bf2b3e1bfb82254ae ""
-  "Abschlussarbeit_EN.aux" 1772315208.42421 1274 c8b7761bb5ccb27b203d0c403f6e3b14 "pdflatex"
-  "Metadaten/content.aux" 1772315208.41928 3305 fff30dae32ce2391729605102a9716cc "pdflatex"
-  "Metadaten/cover_sheet.aux" 1772315208.02681 791 f165f52fa4363d668536b2e2791d9f32 "pdflatex"
+  "Abschlussarbeit_EN.aux" 1772318316.05373 1274 c8b7761bb5ccb27b203d0c403f6e3b14 "pdflatex"
+  "Metadaten/content.aux" 1772318316.0468 3303 ec4a4c00a9aad2f0213555702f7371c7 "pdflatex"
+  "Metadaten/cover_sheet.aux" 1772318315.56997 791 f165f52fa4363d668536b2e2791d9f32 "pdflatex"
   (generated)
   "Abschlussarbeit_EN.bbl"
   "Abschlussarbeit_EN.blg"
   (rewritten before read)
-["makeindex Abschlussarbeit_EN.idx"] 1772315205.51735 "Abschlussarbeit_EN.idx" "Abschlussarbeit_EN.ind" "Abschlussarbeit_EN" 1772315208.61804 0
-  "Abschlussarbeit_EN.idx" 1772315207.86661 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+["makeindex Abschlussarbeit_EN.idx"] 1772315205.51735 "Abschlussarbeit_EN.idx" "Abschlussarbeit_EN.ind" "Abschlussarbeit_EN" 1772318316.27374 0
+  "Abschlussarbeit_EN.idx" 1772318315.40743 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
   (generated)
   "Abschlussarbeit_EN.ilg"
   "Abschlussarbeit_EN.ind"
   (rewritten before read)
-["pdflatex"] 1772315207.15084 "/Users/lukasappel/Documents/HTW-Studium/Applied Artificial Intelligence/Projekt/AAIProject/Documentation/Abschlussarbeit_EN.tex" "Abschlussarbeit_EN.pdf" "Abschlussarbeit_EN" 1772315208.61825 0
+["pdflatex"] 1772318314.73217 "/Users/lukasappel/Documents/HTW-Studium/Applied Artificial Intelligence/Projekt/AAIProject/Documentation/Abschlussarbeit_EN.tex" "Abschlussarbeit_EN.pdf" "Abschlussarbeit_EN" 1772318316.27394 0
   "/Users/lukasappel/Documents/HTW-Studium/Applied Artificial Intelligence/Projekt/AAIProject/Documentation/Abschlussarbeit_EN.tex" 1772315193.10647 1809 81cc66d62332577b64fbd0a6d4af9f61 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -120,23 +120,23 @@
   "/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1750073913 5523539 42bcdf476123d06da3a20cfff84997cc ""
   "/usr/local/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt" 1750074213 3599640 0905a2c2bcb80b0dad480b5036c7c36d ""
   "/usr/local/texlive/2024/texmf.cnf" 1710266656 577 e590dabc9e28c5b61546e15f63eebcdf ""
-  "Abschlussarbeit_EN.aux" 1772315208.42421 1274 c8b7761bb5ccb27b203d0c403f6e3b14 "pdflatex"
-  "Abschlussarbeit_EN.bbl" 1772315207.14872 1805 c05adf92d12d5593a4f8446308e91080 "bibtex Abschlussarbeit_EN"
+  "Abschlussarbeit_EN.aux" 1772318316.05373 1274 c8b7761bb5ccb27b203d0c403f6e3b14 "pdflatex"
+  "Abschlussarbeit_EN.bbl" 1772318009.08228 1805 c05adf92d12d5593a4f8446308e91080 "bibtex Abschlussarbeit_EN"
   "Abschlussarbeit_EN.ind" 1772315205.58798 0 d41d8cd98f00b204e9800998ecf8427e "makeindex Abschlussarbeit_EN.idx"
-  "Abschlussarbeit_EN.lof" 1772315208.42533 844 4b931a001e7473fd0dd9c4f66ed8f6a7 "pdflatex"
+  "Abschlussarbeit_EN.lof" 1772318316.05523 844 4b931a001e7473fd0dd9c4f66ed8f6a7 "pdflatex"
   "Abschlussarbeit_EN.tex" 1772315193.10647 1809 81cc66d62332577b64fbd0a6d4af9f61 ""
-  "Abschlussarbeit_EN.toc" 1772315208.4253 693 b71ce4a90abec89cf0c037cd96d2626a "pdflatex"
-  "Content/Conclusion.tex" 1772315133.63894 1803 b732bc8a0aac088ada13fc325ff5cad6 ""
-  "Content/Methodology.tex" 1772314408.2263 12829 5cc4be9c4e495a5c97fe6c0d8ffe8232 ""
+  "Abschlussarbeit_EN.toc" 1772318316.05505 691 1d4148bf445935cf281501292e7dc2db "pdflatex"
+  "Content/Conclusion.tex" 1772316974.19206 1817 fb564a6b9f00389c7a57050a7420d73e ""
+  "Content/Methodology.tex" 1772318008.71654 12691 c40399493706b9be9b0ea7bbeda7c329 ""
   "Content/Related_works.tex" 1772278369.28024 3808 ca890237ccb10a08104d789b320b577c ""
-  "Content/Results.tex" 1772315097.84825 6157 e54862f64b341d50c01b556970c10a14 ""
-  "Content/introduction.tex" 1772282424.07909 2918 f81e1e9b82187a7bcaba0846f763f48a ""
+  "Content/Results.tex" 1772316707.66885 6207 28da417239911f2765c7366552a26fb7 ""
+  "Content/introduction.tex" 1772318314.55476 2947 c3232b99b5c611ad5540e9d5901568f8 ""
   "Metadaten/Meta.tex" 1772278369.28136 545 6b0d419207f6057ce62d1a1e2ea8ce88 ""
   "Metadaten/Packages.tex" 1772286054.76887 2185 dff673e4749863015483deb62a9d35b2 ""
   "Metadaten/arial/latex/uarial.sty" 1772278369.28493 856 35196ce1d5b2d28943092f165790986f ""
-  "Metadaten/content.aux" 1772315208.41928 3305 fff30dae32ce2391729605102a9716cc "pdflatex"
+  "Metadaten/content.aux" 1772318316.0468 3303 ec4a4c00a9aad2f0213555702f7371c7 "pdflatex"
   "Metadaten/content.tex" 1772278369.29265 374 0b078df484bab7df10b32e523d551aac ""
-  "Metadaten/cover_sheet.aux" 1772315208.02681 791 f165f52fa4363d668536b2e2791d9f32 "pdflatex"
+  "Metadaten/cover_sheet.aux" 1772318315.56997 791 f165f52fa4363d668536b2e2791d9f32 "pdflatex"
   "Metadaten/cover_sheet.tex" 1772278369.29277 883 db3ab0d6c0d9d027e98e02c3f9f40e1c ""
   "Metadaten/page_style.tex" 1772278369.29307 642 04a45de8353fc1b309d1a7ecbb7f5ac8 ""
   "Pictures/HTW_GESAMTLOGO_CMYK.pdf" 1772278369.29346 7201 04fcc1696f48ca349e74d479a4dd1602 ""
