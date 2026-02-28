@@ -169,9 +169,15 @@ it will detect them as streets.
 The second approach still worked better used it in our current implementation.
 
 For the street sign detection we could use the YOLO models provided by panoramax.
+<<<<<<< HEAD
 The \texttt{Panoramax/detect_face_plate_sign}-model
 returns the bounding boxes of detected road signs and the
 \texttt{Panoramax/classify_fr_road_signs}-model
+=======
+The \texttt{Panoramax/detect\_face\_plate\_sign}-model
+returns the bounding boxes of detected road signs and the
+\texttt{Panoramax/classify\_fr\_road\_signs}-model
+>>>>>>> 3f1ee2700fff2f9e4a72c7ccd71e4b09d63f4368
 just has to analyze the crops. After both steps the scheme
 presented in the decision tree in figure \ref{fig:decision_tree} is used to
 label the street.
