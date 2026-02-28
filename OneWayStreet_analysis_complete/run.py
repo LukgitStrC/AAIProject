@@ -77,7 +77,7 @@ seg_model_path = os.path.join(model_dir,'segmentation','best.pt')
 
 tiles_radius = 2    # number of tiles around center-coords
 zoom = 21       # Std = 21
-api_key = "qR5z0FXl7vgm9kk146HC"
+api_key = "INSERT_OWN_MAPTILER_API_KEY"
 map_img = build_map(lat_sat, lon_sat, zoom, tiles_radius, api_key)
 
 map_img.save(sat_img_path) 
