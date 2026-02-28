@@ -1,2 +1,32 @@
 % !TEX root = ../Grunddatei.tex
 \section{Results and Discussion}
+
+...
+
+The approach to extract the relevant streets does not works very well because
+the accuracy is very low as you can see in the foloowing little benchmark results:
+\begin{verbatim}
+==============================
+ BENCHMARK RESULTS
+==============================
+Total True Positives:  27
+Total False Positives: 16
+Total False Negatives: 24
+------------------------------
+Precision: 62.79%
+Recall:    52.94%
+F1-Score:  57.45%
+Mean Angular Error: 4.26°
+==============================
+\end{verbatim}
+
+in this benchmark every street entrance that was marked as a human is a single
+test and the benchmark then uses our function s to predict the angles of streets
+in a panorama.
+If the deviation from the center of the street is less than 15°, then the test
+was a success, else a miss. Because this measure is very much dependant on the
+choice of tolerance.
+
+...
+
+
